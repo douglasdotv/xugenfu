@@ -1,8 +1,19 @@
+import { Container, Typography } from '@mui/material'
+
 const Home = () => {
   return (
-    <div>
-      <h1>Welcome to Xugenfu!</h1>
-    </div>
+    <Container maxWidth="md">
+      <Typography
+        variant="h2"
+        component="h1"
+        sx={{
+          textAlign: 'center',
+          mt: 8,
+        }}
+      >
+        Welcome to Xugenfu!
+      </Typography>
+    </Container>
   )
 }
 
