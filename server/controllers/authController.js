@@ -4,17 +4,19 @@ const config = require('../utils/config')
 const User = require('../models/user')
 
 const register = async (req, res) => {
-  const { username, name, password } = req.body
+  const { username, email, name, password } = req.body
 
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' })
+  if (!username || !email || !password) {
+    return res
+      .status(400)
+      .json({ error: 'Username, email and password are required' })
   }
 
-  const existingUser = await User.findOne({
-    username,
+  const existingUserOrEmail = await User.findOne({
+    $or: [{ username }, { email }],
   })
-  if (existingUser) {
-    return res.status(400).json({ error: 'Username already in use' })
+  if (existingUserOrEmail) {
+    return res.status(400).json({ error: 'Username or email already in use' })
   }
 
   if (password.length < 3) {
@@ -31,6 +33,7 @@ const register = async (req, res) => {
 
   const user = new User({
     username,
+    email,
     name,
     hashedPassword,
     isAdmin: isFirstUser,
