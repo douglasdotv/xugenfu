@@ -1,16 +1,16 @@
-import { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { AuthContext } from '../contexts/AuthContext'
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material'
+import { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 
 const Navbar = () => {
-  const { auth, logout } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { auth, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
+    logout();
+    navigate('/');
+  };
 
   return (
     <AppBar position="static">
@@ -49,7 +49,7 @@ const Navbar = () => {
         )}
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

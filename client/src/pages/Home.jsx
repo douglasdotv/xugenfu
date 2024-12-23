@@ -1,4 +1,4 @@
-import { Container, Typography } from '@mui/material'
+import { Container, Typography } from '@mui/material';
 
 const Home = () => {
   return (
@@ -14,7 +14,7 @@ const Home = () => {
         Welcome to Xugenfu!
       </Typography>
     </Container>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

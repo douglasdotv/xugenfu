@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
-import authService from '../services/authService'
-import { AuthContext } from '../contexts/AuthContext'
+import { useState, useContext } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
+import authService from '../services/authService';
+import { AuthContext } from '../contexts/AuthContext';
 import {
   TextField,
   Button,
@@ -10,30 +10,30 @@ import {
   Alert,
   Box,
   Paper,
-} from '@mui/material'
+} from '@mui/material';
 
 const Signup = () => {
-  const { auth } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      await authService.register({ username, email, name, password })
-      navigate('/login')
+      await authService.register({ username, email, name, password });
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to sign up')
+      setError(err.response?.data?.error || 'Failed to sign up');
     }
-  }
+  };
 
   if (auth) {
-    return <Navigate to="/dashboard" />
+    return <Navigate to="/dashboard" />;
   }
 
   return (
@@ -111,7 +111,7 @@ const Signup = () => {
         </Paper>
       </Box>
     </Container>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;

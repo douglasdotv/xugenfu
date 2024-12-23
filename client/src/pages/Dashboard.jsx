@@ -1,9 +1,9 @@
-import { useContext } from 'react'
-import { AuthContext } from '../contexts/AuthContext'
-import { Container, Typography } from '@mui/material'
+import { useContext } from 'react';
+import { AuthContext } from '../contexts/AuthContext';
+import { Container, Typography } from '@mui/material';
 
 const Dashboard = () => {
-  const { auth } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext);
 
   return (
     <Container maxWidth="md">
@@ -27,7 +27,7 @@ const Dashboard = () => {
         You are logged in as {auth.user.username}.
       </Typography>
     </Container>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

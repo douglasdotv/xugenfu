@@ -1,7 +1,7 @@
-import { useState, useContext } from 'react'
-import { useNavigate, Navigate } from 'react-router-dom'
-import authService from '../services/authService'
-import { AuthContext } from '../contexts/AuthContext'
+import { useState, useContext } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
+import authService from '../services/authService';
+import { AuthContext } from '../contexts/AuthContext';
 import {
   TextField,
   Button,
@@ -10,29 +10,29 @@ import {
   Alert,
   Box,
   Paper,
-} from '@mui/material'
+} from '@mui/material';
 
 const Login = () => {
-  const { auth, login } = useContext(AuthContext)
-  const navigate = useNavigate()
+  const { auth, login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const data = await authService.login({ username, password })
-      login(data.token, data.user)
-      navigate('/dashboard')
+      const data = await authService.login({ username, password });
+      login(data.token, data.user);
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to log in')
+      setError(err.response?.data?.error || 'Failed to log in');
     }
-  }
+  };
 
   if (auth) {
-    return <Navigate to="/dashboard" />
+    return <Navigate to="/dashboard" />;
   }
 
   return (
@@ -93,7 +93,7 @@ const Login = () => {
         </Paper>
       </Box>
     </Container>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
