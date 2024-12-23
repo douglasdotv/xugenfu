@@ -1,9 +1,9 @@
-const express = require('express')
+const express = require('express');
 
-const router = express.Router()
+const router = express.Router();
 
 router.get('/', (_req, res) => {
-  res.status(200).json({ message: 'API is running', status: 'OK' })
-})
+  res.status(200).json({ message: 'API is running', status: 'OK' });
+});
 
-module.exports = router
+module.exports = router;
