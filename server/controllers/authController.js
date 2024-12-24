@@ -76,6 +76,7 @@ const login = async (req, res) => {
     user: {
       username: user.username,
       name: user.name,
+      isAdmin: user.isAdmin,
     },
   });
 };
