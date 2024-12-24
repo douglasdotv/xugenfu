@@ -1,31 +1,31 @@
-import { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import { Container, Typography } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { Container, Link as MuiLink } from '@mui/material';
 
 const Dashboard = () => {
-  const { auth } = useContext(AuthContext);
-
   return (
-    <Container maxWidth="md">
-      <Typography
-        variant="h2"
-        component="h1"
+    <Container
+      maxWidth="md"
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '50vh',
+      }}
+    >
+      <MuiLink
+        component={RouterLink}
+        to="/leagues/active"
         sx={{
-          textAlign: 'center',
-          mt: 8,
-          mb: 4,
+          color: '#1976d2',
+          textDecoration: 'none',
+          fontSize: '1.2rem',
+          '&:hover': {
+            textDecoration: 'underline',
+          },
         }}
       >
-        Dashboard
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          textAlign: 'center',
-        }}
-      >
-        You are logged in as {auth.user.username}.
-      </Typography>
+        View Active League
+      </MuiLink>
     </Container>
   );
 };

@@ -23,11 +23,21 @@ const Navbar = () => {
         >
           Xugenfu
         </Typography>
-        {auth ? (
+
+        <Button color="inherit" component={Link} to="/leagues/active">
+          Active League
+        </Button>
+
+        {/* Admin-only buttons */}
+        {auth?.user?.isAdmin && (
+          <Button color="inherit" component={Link} to="/leagues/fetch">
+            Fetch League
+          </Button>
+        )}
+
+        {/* Auth-required buttons */}
+        {auth && (
           <>
-            <Button color="inherit" component={Link} to="/dashboard">
-              Dashboard
-            </Button>
             <Box mx={2}>
               <Typography variant="body1">
                 Welcome, {auth.user.name || auth.user.username}!
@@ -37,7 +47,10 @@ const Navbar = () => {
               Log out
             </Button>
           </>
-        ) : (
+        )}
+
+        {/* Public buttons */}
+        {!auth && (
           <>
             <Button color="inherit" component={Link} to="/login">
               Log in
