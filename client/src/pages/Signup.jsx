@@ -21,10 +21,34 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [teamId, setTeamId] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (confirmPassword && e.target.value !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match');
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (password && e.target.value !== password) {
+      setConfirmPasswordError('Passwords do not match');
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
     try {
       await authService.register({ username, email, name, teamId, password });
       navigate('/login');
@@ -102,8 +126,20 @@ const Signup = () => {
               fullWidth
               margin="normal"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               required
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="Confirm Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              required
+              error={Boolean(confirmPasswordError)}
+              helperText={confirmPasswordError}
               sx={{ mb: 3 }}
             />
             <Button
