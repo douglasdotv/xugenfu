@@ -19,13 +19,14 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [teamId, setTeamId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await authService.register({ username, email, name, password });
+      await authService.register({ username, email, name, teamId, password });
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to sign up');
@@ -85,6 +86,14 @@ const Signup = () => {
               margin="normal"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="MZ Team ID"
+              fullWidth
+              margin="normal"
+              value={teamId}
+              onChange={(e) => setTeamId(e.target.value)}
               sx={{ mb: 2 }}
             />
             <TextField
