@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -13,6 +13,7 @@ import {
   TableRow,
   Alert,
   CircularProgress,
+  Button,
 } from '@mui/material';
 import leagueService from '../services/leagueService';
 
@@ -70,9 +71,26 @@ const LeagueView = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Active League
-      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
+        <Typography variant="h4" component="h1">
+          Active League
+        </Typography>
+        <Button
+          component={Link}
+          to={`/leagues/${fsid}/predictions`}
+          variant="contained"
+          color="primary"
+        >
+          Make Predictions
+        </Button>
+      </Box>
       <Typography variant="subtitle1" gutterBottom>
         Last Updated: {new Date(league.lastUpdated).toLocaleString()}
       </Typography>

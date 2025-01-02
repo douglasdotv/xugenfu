@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import LeagueFetch from './pages/LeagueFetch';
 import ActiveLeague from './pages/ActiveLeague';
 import LeagueView from './pages/LeagueView';
+import Predictions from './pages/Predictions';
 
 const App = () => {
   return (
@@ -36,6 +37,14 @@ const App = () => {
         />
         <Route path="/leagues/active" element={<ActiveLeague />} />
         <Route path="/leagues/:fsid" element={<LeagueView />} />
+        <Route
+          path="/leagues/:fsid/predictions"
+          element={
+            <PrivateRoute>
+              <Predictions />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </div>
