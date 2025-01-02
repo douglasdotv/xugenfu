@@ -21,7 +21,7 @@ const Navbar = () => {
           to="/"
           style={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}
         >
-          Xugenfu
+          xugenfu106
         </Typography>
 
         <Button color="inherit" component={Link} to="/leagues/active">

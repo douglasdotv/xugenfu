@@ -1,18 +1,73 @@
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, Box, keyframes } from '@mui/material';
+
+const rotate = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const weirdPulse = keyframes`
+  0% {
+    transform: scale(1);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    transform: scale(1.1);
+    filter: hue-rotate(360deg);
+  }
+`;
 
 const Home = () => {
   return (
-    <Container maxWidth="md">
-      <Typography
-        variant="h2"
-        component="h1"
+    <Container
+      maxWidth="md"
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Box
         sx={{
           textAlign: 'center',
-          mt: 8,
+          animation: `${weirdPulse} 7s infinite alternate`,
+          p: 3,
+          background: 'black',
+          border: '2px solid #fff',
+          borderRadius: 2,
+          boxShadow: '0 0 20px #ff8ad8',
         }}
       >
-        Welcome to Xugenfu!
-      </Typography>
+        <Typography
+          variant="h2"
+          component="h1"
+          sx={{
+            mb: 4,
+            color: '#fff',
+            fontFamily: 'monospace',
+            textShadow: '0 0 10px #fff, 0 0 20px #f0f, 0 0 30px #0ff',
+          }}
+        >
+          Welcome to xugenfu106!
+        </Typography>
+        <Box
+          component="img"
+          src="https://www.managerzone.com/dynimg/pic.php?type=federation&fid=63&size=small&sport=soccer"
+          alt="Return of the King Logo"
+          sx={{
+            width: 200,
+            height: 200,
+            borderRadius: '50%',
+            boxShadow: '0 0 10px #00fff7',
+            animation: `${rotate} 10s linear infinite`,
+          }}
+        />
+      </Box>
     </Container>
   );
 };
