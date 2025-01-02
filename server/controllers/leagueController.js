@@ -48,6 +48,39 @@ const getLeague = async (req, res) => {
   }
 };
 
+const updateMatchVoidStatus = async (req, res) => {
+  try {
+    const { fsid, matchId } = req.params;
+    const { isVoided, voidReason } = req.body;
+
+    const league = await League.findOne({ fsid });
+    if (!league) {
+      return res.status(404).json({ error: 'League not found' });
+    }
+
+    let matchUpdated = false;
+
+    for (const round of league.rounds) {
+      const matchIndex = round.matches.findIndex((m) => m.matchId === matchId);
+      if (matchIndex !== -1) {
+        round.matches[matchIndex].isVoided = isVoided;
+        round.matches[matchIndex].voidReason = voidReason;
+        matchUpdated = true;
+        break;
+      }
+    }
+
+    if (!matchUpdated) {
+      return res.status(404).json({ error: 'Match not found' });
+    }
+
+    await league.save();
+    res.status(200).json({ message: 'Match void status updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update match void status' });
+  }
+};
+
 const fetchLeagueData = async (req, res) => {
   try {
     const { fsid, phpsessid } = req.body;
@@ -70,5 +103,6 @@ module.exports = {
   getAllLeagues,
   getLatestLeague,
   getLeague,
+  updateMatchVoidStatus,
   fetchLeagueData,
 };
