@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Container,
@@ -14,14 +14,22 @@ import {
   Alert,
   CircularProgress,
   Button,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
+import { Edit } from '@mui/icons-material';
+import { AuthContext } from '../contexts/AuthContext';
 import leagueService from '../services/leagueService';
+import VoidMatchDialog from '../components/VoidMatchDialog';
 
 const LeagueView = () => {
   const { fsid } = useParams();
+  const { auth } = useContext(AuthContext);
   const [league, setLeague] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedMatch, setSelectedMatch] = useState(null);
+  const [voidDialogOpen, setVoidDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchLeague = async () => {
@@ -37,6 +45,32 @@ const LeagueView = () => {
 
     fetchLeague();
   }, [fsid]);
+
+  const handleVoidStatusUpdate = async (isVoided, voidReason) => {
+    try {
+      await leagueService.updateMatchVoidStatus(
+        fsid,
+        selectedMatch.matchId,
+        isVoided,
+        voidReason
+      );
+
+      const updatedLeague = {
+        ...league,
+        rounds: league.rounds.map((round) => ({
+          ...round,
+          matches: round.matches.map((match) =>
+            match.matchId === selectedMatch.matchId
+              ? { ...match, isVoided, voidReason }
+              : match
+          ),
+        })),
+      };
+      setLeague(updatedLeague);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update match status');
+    }
+  };
 
   if (loading) {
     return (
@@ -109,6 +143,9 @@ const LeagueView = () => {
                   <TableCell>Away Team</TableCell>
                   <TableCell align="center">Match ID</TableCell>
                   <TableCell align="center">Status</TableCell>
+                  {auth?.user?.isAdmin && (
+                    <TableCell align="center">Actions</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -129,6 +166,20 @@ const LeagueView = () => {
                         'Valid'
                       )}
                     </TableCell>
+                    {auth?.user?.isAdmin && (
+                      <TableCell align="center">
+                        <Tooltip title="Edit Match Status">
+                          <IconButton
+                            onClick={() => {
+                              setSelectedMatch(match);
+                              setVoidDialogOpen(true);
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -136,6 +187,20 @@ const LeagueView = () => {
           </TableContainer>
         </Paper>
       ))}
+
+      {selectedMatch && (
+        <VoidMatchDialog
+          open={voidDialogOpen}
+          onClose={() => {
+            setVoidDialogOpen(false);
+            setSelectedMatch(null);
+          }}
+          match={selectedMatch}
+          onSubmit={handleVoidStatusUpdate}
+          initialIsVoided={selectedMatch.isVoided}
+          initialVoidReason={selectedMatch.voidReason}
+        />
+      )}
     </Container>
   );
 };

@@ -10,6 +10,14 @@ const getActiveLeague = async () => {
   return response.data;
 };
 
+const updateMatchVoidStatus = async (fsid, matchId, isVoided, voidReason) => {
+  const response = await authApiClient.patch(
+    `/leagues/${fsid}/matches/${matchId}/void-status`,
+    { isVoided, voidReason }
+  );
+  return response.data;
+};
+
 const fetchLeagueData = async (fsid, phpsessid) => {
   const response = await authApiClient.post('/leagues/fetch-league-data', {
     fsid,
@@ -21,5 +29,6 @@ const fetchLeagueData = async (fsid, phpsessid) => {
 export default {
   getLeague,
   getActiveLeague,
+  updateMatchVoidStatus,
   fetchLeagueData,
 };
