@@ -11,6 +11,7 @@ logs
 # Build or dist folders
 dist/
 build/
+public/
 
 # Editor-specific files
 .vscode/
