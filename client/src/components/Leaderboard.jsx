@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -11,6 +12,7 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  Button,
 } from '@mui/material';
 import scoringService from '../services/scoringService';
 
@@ -48,9 +50,17 @@ const Leaderboard = ({ fsid }) => {
 
   return (
     <Paper elevation={3} sx={{ p: 3, mt: 3 }}>
-      <Typography variant="h5" gutterBottom>
-        Leaderboard
-      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
+        <Typography variant="h5">Leaderboard</Typography>
+      </Box>
+
       <TableContainer>
         <Table>
           <TableHead>
@@ -61,7 +71,7 @@ const Leaderboard = ({ fsid }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {leaderboard.map((entry) => (
+            {leaderboard.slice(0, 5).map((entry) => (
               <TableRow
                 key={entry.userId}
                 sx={({ palette }) => {
@@ -82,6 +92,17 @@ const Leaderboard = ({ fsid }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+        <Button
+          component={Link}
+          to={`/leagues/${fsid}/leaderboard`}
+          variant="outlined"
+          size="small"
+        >
+          View Full Leaderboard
+        </Button>
+      </Box>
     </Paper>
   );
 };
