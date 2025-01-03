@@ -16,7 +16,6 @@ import {
   Button,
   IconButton,
   Tooltip,
-  Grid,
 } from '@mui/material';
 import { Edit } from '@mui/icons-material';
 import { AuthContext } from '../contexts/AuthContext';
@@ -133,8 +132,15 @@ const LeagueView = () => {
         Last Updated: {new Date(league.lastUpdated).toLocaleString()}
       </Typography>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
+          alignItems: 'start',
+        }}
+      >
+        <Box>
           {league.rounds.map((round) => (
             <Paper key={round.roundNumber} sx={{ mt: 4, p: 2 }}>
               <Typography variant="h6" gutterBottom>
@@ -222,14 +228,12 @@ const LeagueView = () => {
               </TableContainer>
             </Paper>
           ))}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Box sx={{ position: { md: 'sticky' }, top: 24 }}>
-            <Leaderboard fsid={fsid} />
-            {auth && <UserScores fsid={fsid} />}
-          </Box>
-        </Grid>
-      </Grid>
+        </Box>
+        <Box sx={{ position: { md: 'sticky' }, top: 24 }}>
+          <Leaderboard fsid={fsid} />
+          {auth && <UserScores fsid={fsid} />}
+        </Box>
+      </Box>
 
       {selectedMatch && (
         <VoidMatchDialog

@@ -14,7 +14,6 @@ import {
   CircularProgress,
   Alert,
   Button,
-  Grid,
 } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import scoringService from '../services/scoringService';
@@ -72,8 +71,14 @@ const DetailedScores = () => {
         </Typography>
       </Box>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 3,
+          gridTemplateColumns: { xs: '1fr', md: '1fr 2fr' },
+        }}
+      >
+        <Box>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>
               Summary
@@ -85,9 +90,9 @@ const DetailedScores = () => {
               Total Points
             </Typography>
           </Paper>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12}>
+        <Box>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>
               Round Details
@@ -126,8 +131,8 @@ const DetailedScores = () => {
               </Table>
             </TableContainer>
           </Paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Container>
   );
 };
