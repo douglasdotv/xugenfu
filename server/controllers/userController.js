@@ -12,7 +12,7 @@ const getAllUsers = async (_req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { teamId, teamName, name, email } = req.body;
+    const { teamId, teamName, name, email, mzUsername, isAdmin } = req.body;
 
     const existingUser = await User.findById(id);
     if (!existingUser) {
@@ -33,9 +33,16 @@ const updateUser = async (req, res) => {
       }
     }
 
+    if (mzUsername !== existingUser.mzUsername) {
+      const mzUsernameExists = await User.findOne({ mzUsername });
+      if (mzUsernameExists) {
+        return res.status(400).json({ error: 'MZ Username already in use' });
+      }
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { teamId, teamName, name, email },
+      { teamId, teamName, name, email, mzUsername, isAdmin },
       { new: true, runValidators: true }
     ).select('-hashedPassword');
 
