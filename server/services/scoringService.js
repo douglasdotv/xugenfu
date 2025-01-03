@@ -31,9 +31,17 @@ const calculateRoundScore = (predictions, matches) => {
 };
 
 const calculateLeaderboard = async (league, predictions) => {
-  const activeUserIds = await User.distinct('_id');
-  const activePredictions = predictions.filter((prediction) =>
-    activeUserIds.some((id) => id.equals(prediction.userId))
+  const activeUsers = await User.find(
+    {},
+    'username name mzUsername teamId teamName'
+  );
+  const activeUserIds = activeUsers.reduce((map, user) => {
+    map[user._id.toString()] = user;
+    return map;
+  }, {});
+
+  const activePredictions = predictions.filter(
+    (prediction) => activeUserIds[prediction.userId.toString()]
   );
 
   const userScores = {};
@@ -72,10 +80,18 @@ const calculateLeaderboard = async (league, predictions) => {
 
   return Object.values(userScores)
     .sort((a, b) => b.totalPoints - a.totalPoints)
-    .map((score, index) => ({
-      ...score,
-      rank: index + 1,
-    }));
+    .map((score, index) => {
+      const user = activeUserIds[score.userId.toString()];
+      return {
+        ...score,
+        rank: index + 1,
+        username: user.username,
+        name: user.name,
+        mzUsername: user.mzUsername,
+        teamId: user.teamId,
+        teamName: user.teamName,
+      };
+    });
 };
 
 module.exports = {
