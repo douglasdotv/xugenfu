@@ -4,6 +4,7 @@ export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -11,6 +12,7 @@ const AuthProvider = ({ children }) => {
     if (token && userData) {
       setAuth({ token, user: JSON.parse(userData) });
     }
+    setLoading(false);
   }, []);
 
   const login = (token, user) => {
@@ -25,7 +27,12 @@ const AuthProvider = ({ children }) => {
     setAuth(null);
   };
 
-  const contextValue = useMemo(() => ({ auth, login, logout }), [auth]);
+  const contextValue = useMemo(
+    () => ({ auth, login, logout, loading }),
+    [auth, loading]
+  );
+
+  if (loading) return null;
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
