@@ -148,7 +148,6 @@ const LeagueView = () => {
                       <TableCell>Home Team</TableCell>
                       <TableCell align="center">Result</TableCell>
                       <TableCell>Away Team</TableCell>
-                      <TableCell align="center">Match ID</TableCell>
                       <TableCell align="center">Status</TableCell>
                       {auth?.user?.isAdmin && (
                         <TableCell align="center">Actions</TableCell>
@@ -157,13 +156,41 @@ const LeagueView = () => {
                   </TableHead>
                   <TableBody>
                     {round.matches.map((match) => (
-                      <TableRow key={match.matchId}>
-                        <TableCell>{match.homeTeam}</TableCell>
-                        <TableCell align="center">
-                          {match.result || 'Not Played'}
+                      <TableRow
+                        key={match.matchId}
+                        hover
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        <TableCell>
+                          <a
+                            href={`https://www.managerzone.com/?p=match&sub=result&mid=${match.matchId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                          >
+                            {match.homeTeam}
+                          </a>
                         </TableCell>
-                        <TableCell>{match.awayTeam}</TableCell>
-                        <TableCell align="center">{match.matchId}</TableCell>
+                        <TableCell align="center">
+                          <a
+                            href={`https://www.managerzone.com/?p=match&sub=result&mid=${match.matchId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                          >
+                            {match.result || 'Not Played'}
+                          </a>
+                        </TableCell>
+                        <TableCell>
+                          <a
+                            href={`https://www.managerzone.com/?p=match&sub=result&mid=${match.matchId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                          >
+                            {match.awayTeam}
+                          </a>
+                        </TableCell>
                         <TableCell align="center">
                           {match.isVoided ? (
                             <Typography color="error">
@@ -177,7 +204,8 @@ const LeagueView = () => {
                           <TableCell align="center">
                             <Tooltip title="Edit Match Status">
                               <IconButton
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setSelectedMatch(match);
                                   setVoidDialogOpen(true);
                                 }}
