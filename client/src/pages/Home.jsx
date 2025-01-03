@@ -9,17 +9,6 @@ const rotate = keyframes`
   }
 `;
 
-const weirdPulse = keyframes`
-  0% {
-    transform: scale(1);
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    transform: scale(1.1);
-    filter: hue-rotate(360deg);
-  }
-`;
-
 const Home = () => {
   return (
     <Container
@@ -35,7 +24,6 @@ const Home = () => {
       <Box
         sx={{
           textAlign: 'center',
-          animation: `${weirdPulse} 7s infinite alternate`,
           p: 3,
           background: 'black',
           border: '2px solid #fff',
