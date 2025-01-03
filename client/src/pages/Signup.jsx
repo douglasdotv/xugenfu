@@ -19,6 +19,7 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [mzUsername, setMzUsername] = useState('');
   const [teamId, setTeamId] = useState('');
   const [teamName, setTeamName] = useState('');
   const [password, setPassword] = useState('');
@@ -55,6 +56,7 @@ const Signup = () => {
         username,
         email,
         name,
+        mzUsername,
         teamId,
         teamName,
         password,
@@ -118,6 +120,14 @@ const Signup = () => {
               margin="normal"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              label="MZ Username"
+              fullWidth
+              margin="normal"
+              value={mzUsername}
+              onChange={(e) => setMzUsername(e.target.value)}
               sx={{ mb: 2 }}
             />
             <TextField
