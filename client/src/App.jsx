@@ -5,7 +5,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
+import CurrentRound from './pages/CurrentRound';
 import LeagueFetch from './pages/LeagueFetch';
 import UserManagement from './pages/UserManagement';
 import ActiveLeague from './pages/ActiveLeague';
@@ -26,7 +26,7 @@ const App = () => {
           path="/dashboard"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <CurrentRound />
             </PrivateRoute>
           }
         />
