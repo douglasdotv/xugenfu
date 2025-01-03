@@ -4,7 +4,7 @@ const config = require('../utils/config');
 const User = require('../models/user');
 
 const register = async (req, res) => {
-  const { username, email, name, teamId, password } = req.body;
+  const { username, email, name, teamId, teamName, password } = req.body;
 
   if (!username || !email || !password) {
     return res
@@ -36,6 +36,7 @@ const register = async (req, res) => {
     email,
     name,
     teamId,
+    teamName,
     hashedPassword,
     isAdmin: isFirstUser,
   });
