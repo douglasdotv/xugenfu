@@ -30,9 +30,14 @@ const Navbar = () => {
 
         {/* Admin-only buttons */}
         {auth?.user?.isAdmin && (
-          <Button color="inherit" component={Link} to="/leagues/fetch">
-            Fetch League
-          </Button>
+          <>
+            <Button color="inherit" component={Link} to="/leagues/fetch">
+              Fetch League
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              Manage Users
+            </Button>
+          </>
         )}
 
         {/* Auth-required buttons */}

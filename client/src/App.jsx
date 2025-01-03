@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import LeagueFetch from './pages/LeagueFetch';
+import UserManagement from './pages/UserManagement';
 import ActiveLeague from './pages/ActiveLeague';
 import LeagueView from './pages/LeagueView';
 import Predictions from './pages/Predictions';
@@ -34,6 +35,14 @@ const App = () => {
           element={
             <AdminRoute>
               <LeagueFetch />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <AdminRoute>
+              <UserManagement />
             </AdminRoute>
           }
         />
