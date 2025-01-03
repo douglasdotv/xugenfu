@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   Container,
   Typography,
@@ -19,11 +19,16 @@ import {
   TextField,
   Alert,
   CircularProgress,
+  Checkbox,
+  FormControlLabel,
+  Tooltip,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { Edit, AdminPanelSettings, Person } from '@mui/icons-material';
+import { AuthContext } from '../contexts/AuthContext';
 import userService from '../services/userService';
 
 const UserManagement = () => {
+  const { auth } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,6 +39,8 @@ const UserManagement = () => {
     teamName: '',
     name: '',
     email: '',
+    mzUsername: '',
+    isAdmin: false,
   });
 
   useEffect(() => {
@@ -43,6 +50,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const data = await userService.getAllUsers();
+      console.log(data);
       setUsers(data);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to fetch users');
@@ -58,6 +66,8 @@ const UserManagement = () => {
       teamName: user.teamName,
       name: user.name,
       email: user.email,
+      mzUsername: user.mzUsername,
+      isAdmin: user.isAdmin,
     });
     setDialogOpen(true);
   };
@@ -66,10 +76,12 @@ const UserManagement = () => {
     setDialogOpen(false);
     setSelectedUser(null);
     setFormData({
+      mzUsername: '',
       teamId: '',
       teamName: '',
       name: '',
       email: '',
+      isAdmin: false,
     });
   };
 
@@ -116,9 +128,11 @@ const UserManagement = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Role</TableCell>
                 <TableCell>Username</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
+                <TableCell>MZ Username</TableCell>
                 <TableCell>Team ID</TableCell>
                 <TableCell>Team Name</TableCell>
                 <TableCell align="center">Actions</TableCell>
@@ -126,14 +140,32 @@ const UserManagement = () => {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
+                <TableRow
+                  key={user.id}
+                  sx={user.isAdmin ? { backgroundColor: 'action.hover' } : {}}
+                >
+                  <TableCell>
+                    <Tooltip title={user.isAdmin ? 'Admin' : 'User'}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {user.isAdmin ? (
+                          <AdminPanelSettings color="primary" />
+                        ) : (
+                          <Person color="action" />
+                        )}
+                      </Box>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.mzUsername}</TableCell>
                   <TableCell>{user.teamId}</TableCell>
                   <TableCell>{user.teamName}</TableCell>
                   <TableCell align="center">
-                    <IconButton onClick={() => handleEditClick(user)}>
+                    <IconButton
+                      onClick={() => handleEditClick(user)}
+                      disabled={!auth?.user?.isAdmin}
+                    >
                       <Edit />
                     </IconButton>
                   </TableCell>
@@ -145,9 +177,28 @@ const UserManagement = () => {
       </Paper>
 
       <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Edit User</DialogTitle>
+        <DialogTitle>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {formData.isAdmin ? (
+              <AdminPanelSettings color="primary" />
+            ) : (
+              <Person color="action" />
+            )}
+            Edit User
+          </Box>
+        </DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
+            <TextField
+              label="MZ Username"
+              fullWidth
+              value={formData.mzUsername}
+              onChange={(e) =>
+                setFormData({ ...formData, mzUsername: e.target.value })
+              }
+              required
+              margin="normal"
+            />
             <TextField
               label="Team ID"
               fullWidth
@@ -187,6 +238,18 @@ const UserManagement = () => {
               required
               type="email"
               margin="normal"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.isAdmin}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isAdmin: e.target.checked })
+                  }
+                  disabled={!auth?.user?.isAdmin}
+                />
+              }
+              label="Admin"
             />
           </DialogContent>
           <DialogActions>
