@@ -14,6 +14,8 @@ const updateUser = async (req, res) => {
     const { id } = req.params;
     const { teamId, teamName, name, email, mzUsername, isAdmin } = req.body;
 
+    await checkForLastAdmin(id, isAdmin);
+
     const existingUser = await User.findById(id);
     if (!existingUser) {
       return res.status(404).json({ error: 'User not found' });
@@ -43,13 +45,24 @@ const updateUser = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { teamId, teamName, name, email, mzUsername, isAdmin },
-      { new: true, runValidators: true }
+      { new: true }
     ).select('-hashedPassword');
 
     res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update user' });
+    res.status(400).json({ error: error.message });
   }
+};
+
+const checkForLastAdmin = async (userId, newIsAdmin) => {
+  const user = await User.findById(userId);
+  if (user.isAdmin && !newIsAdmin) {
+    const adminCount = await User.countDocuments({ isAdmin: true });
+    if (adminCount <= 1) {
+      throw new Error('Cannot remove last admin');
+    }
+  }
+  return true;
 };
 
 module.exports = {
