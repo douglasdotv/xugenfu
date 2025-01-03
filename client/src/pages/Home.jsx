@@ -41,7 +41,7 @@ const Home = () => {
             textShadow: '0 0 10px #fff, 0 0 20px #f0f, 0 0 30px #0ff',
           }}
         >
-          Welcome to xugenfu106!
+          ≮王者归来≯
         </Typography>
         <Box
           component="img"
