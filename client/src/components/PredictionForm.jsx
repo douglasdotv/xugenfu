@@ -66,7 +66,7 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
                 value={homeScore}
                 onChange={(e) => setHomeScore(e.target.value)}
                 type="number"
-                InputProps={{ inputProps: { min: 0 } }}
+                slotProps={{ input: { min: 0 } }}
                 size="small"
                 sx={{ width: 100 }}
               />
@@ -78,7 +78,7 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
                 value={awayScore}
                 onChange={(e) => setAwayScore(e.target.value)}
                 type="number"
-                InputProps={{ inputProps: { min: 0 } }}
+                slotProps={{ input: { min: 0 } }}
                 size="small"
                 sx={{ width: 100 }}
               />
