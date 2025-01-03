@@ -77,7 +77,9 @@ const DetailedLeaderboard = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Rank</TableCell>
-                <TableCell>Player</TableCell>
+                <TableCell>MZ Username</TableCell>
+                <TableCell>Full Name</TableCell>
+                <TableCell>Team</TableCell>
                 <TableCell align="right">Total Points</TableCell>
                 <TableCell>Round Scores</TableCell>
               </TableRow>
@@ -97,7 +99,25 @@ const DetailedLeaderboard = () => {
                   }}
                 >
                   <TableCell>{entry.rank}</TableCell>
-                  <TableCell>{entry.name || entry.username}</TableCell>
+                  <TableCell>{entry.mzUsername}</TableCell>
+                  <TableCell>{entry.name}</TableCell>
+                  <TableCell>
+                    {entry.teamId !== undefined ? (
+                      <a
+                        href={`https://www.managerzone.com/?p=team&tid=${entry.teamId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: 'inherit',
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        {entry.teamName}
+                      </a>
+                    ) : (
+                      entry.teamName
+                    )}
+                  </TableCell>
                   <TableCell align="right">{entry.totalPoints}</TableCell>
                   <TableCell>
                     {Object.entries(entry.roundScores)

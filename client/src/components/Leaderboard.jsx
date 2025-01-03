@@ -85,7 +85,9 @@ const Leaderboard = ({ fsid }) => {
                 }}
               >
                 <TableCell>{entry.rank}</TableCell>
-                <TableCell>{entry.name || entry.username}</TableCell>
+                <TableCell>
+                  {entry.mzUsername || entry.name || entry.username}
+                </TableCell>
                 <TableCell align="right">{entry.totalPoints}</TableCell>
               </TableRow>
             ))}
