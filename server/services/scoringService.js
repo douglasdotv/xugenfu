@@ -1,3 +1,5 @@
+const User = require('../models/user');
+
 const calculateRoundScore = (predictions, matches) => {
   const validMatches = matches.filter((match) => !match.isVoided);
   const totalMatches = validMatches.length;
@@ -29,9 +31,14 @@ const calculateRoundScore = (predictions, matches) => {
 };
 
 const calculateLeaderboard = async (league, predictions) => {
+  const activeUserIds = await User.distinct('_id');
+  const activePredictions = predictions.filter((prediction) =>
+    activeUserIds.some((id) => id.equals(prediction.userId))
+  );
+
   const userScores = {};
 
-  predictions.forEach((prediction) => {
+  activePredictions.forEach((prediction) => {
     if (!userScores[prediction.userId]) {
       userScores[prediction.userId] = {
         userId: prediction.userId,
@@ -42,7 +49,7 @@ const calculateLeaderboard = async (league, predictions) => {
   });
 
   league.rounds.forEach((round) => {
-    const roundPredictions = predictions.filter((prediction) =>
+    const roundPredictions = activePredictions.filter((prediction) =>
       round.matches.some((match) => match.matchId === prediction.matchId)
     );
 
