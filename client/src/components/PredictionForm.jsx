@@ -82,7 +82,12 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
           }}
         >
           <Typography variant="h6">
-            {match.homeTeam} vs {match.awayTeam}
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: 'bold', color: 'text.primary' }}
+            >
+              {match.homeTeam} vs {match.awayTeam}
+            </Typography>{' '}
           </Typography>
           <Box>
             {existingPrediction ? (

@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import authService from '../services/authService';
 import { AuthContext } from '../contexts/AuthContext';
 import {
@@ -15,10 +15,20 @@ import {
 const Login = () => {
   const { auth, login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [sessionMessage, setSessionMessage] = useState('');
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSessionMessage(location.state.message);
+      // Clean up the message from location state
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +64,11 @@ const Login = () => {
           >
             Login
           </Typography>
+          {sessionMessage && (
+            <Alert severity="info" sx={{ mb: 2 }}>
+              {sessionMessage}
+            </Alert>
+          )}
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
               {error}
