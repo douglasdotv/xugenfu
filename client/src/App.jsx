@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import AdminRoute from './components/AdminRoute';
 import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
@@ -70,6 +71,7 @@ const App = () => {
         />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+      <Footer />
     </div>
   );
 };
