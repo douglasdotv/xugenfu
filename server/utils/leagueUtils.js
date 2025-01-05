@@ -5,21 +5,60 @@ const logger = require('../utils/logger');
 
 dayjs.extend(customParseFormat);
 
+const ROUND_PATTERNS = {
+  CHINESE: /轮 (\d+) - (\d{4}-\d{2}-\d{2} \d{2}:\d{2})/,
+  ENGLISH: /Round (\d+) - (\d{2}\/\d{2}\/\d{4} \d{1,2}:\d{2}(?:am|pm))/i,
+};
+
+const DATE_FORMATS = {
+  CHINESE: 'YYYY-MM-DD HH:mm',
+  ENGLISH: 'DD/MM/YYYY h:mma',
+};
+
+const parseRoundText = (text) => {
+  let match = text.match(ROUND_PATTERNS.CHINESE);
+  if (match) {
+    return {
+      roundNumber: parseInt(match[1]),
+      dateStr: match[2],
+      format: DATE_FORMATS.CHINESE,
+    };
+  }
+
+  match = text.match(ROUND_PATTERNS.ENGLISH);
+  if (match) {
+    return {
+      roundNumber: parseInt(match[1]),
+      dateStr: match[2],
+      format: DATE_FORMATS.ENGLISH,
+    };
+  }
+
+  logger.error(`Unable to parse round text: ${text}`);
+  return null;
+};
+
 const parseLeagueData = (html) => {
   const $ = cheerio.load(html);
   const rounds = [];
 
   $('h2.subheader').each((_i, roundHeader) => {
     const roundText = $(roundHeader).text();
-    const [roundNum, dateStr] = roundText.split(' - ');
-    const roundNumber = parseInt(roundNum.split(' ')[1]);
+    const parsedRound = parseRoundText(roundText);
 
-    const parsed = dayjs(dateStr, 'DD/MM/YYYY h:mma');
+    if (!parsedRound) {
+      logger.error(`Skipping round due to parsing failure: ${roundText}`);
+      return;
+    }
+
+    const { roundNumber, dateStr, format } = parsedRound;
+    const parsed = dayjs(dateStr, format);
     let date;
+
     if (parsed.isValid()) {
       date = parsed.toDate();
     } else {
-      logger.error(`Unusual date detected: ${dateStr}`);
+      logger.error(`Invalid date detected: ${dateStr}`);
       date = null;
     }
 
