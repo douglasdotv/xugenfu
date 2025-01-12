@@ -151,8 +151,58 @@ const LeagueView = () => {
             mb: 2,
           }}
         >
-          <Typography variant="h4" component="h1">
-            League: {fsid} {fsid === latestFsid && '(Active)'}
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 900,
+              background:
+                fsid === latestFsid
+                  ? 'linear-gradient(135deg,rgb(4, 2, 3) 0%,rgb(17, 27, 17) 50%,rgb(51, 76, 76) 100%)'
+                  : 'linear-gradient(135deg,rgb(51, 34, 34) 0%,rgb(35, 48, 48) 50%,rgb(24, 31, 32) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              transform: 'skew(-2deg)',
+              letterSpacing: '2px',
+            }}
+          >
+            {' '}
+            League {fsid}
+            {fsid !== latestFsid ? (
+              <Box
+                component="span"
+                sx={{
+                  backgroundColor: 'gray',
+                  color: 'white',
+                  padding: '0.1px',
+                  borderRadius: '12px',
+                  fontSize: '0.1rem',
+                  fontWeight: 500,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              ></Box>
+            ) : (
+              <Box
+                component="span"
+                sx={{
+                  backgroundColor: 'lightgray',
+                  color: 'white',
+                  padding: '4px 8px',
+                  borderRadius: '12px',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                }}
+              >
+                ACTIVE
+              </Box>
+            )}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
