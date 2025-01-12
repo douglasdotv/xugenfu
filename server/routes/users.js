@@ -13,5 +13,6 @@ router.use(authMiddleware.requireAdmin);
 router.get('/', userController.getAllUsers);
 router.patch('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
+router.patch('/:id/password', userController.updatePassword);
 
 module.exports = router;

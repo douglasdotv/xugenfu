@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 const getAllUsers = async (_req, res) => {
@@ -82,6 +83,37 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!password || password.length < 3) {
+      return res
+        .status(400)
+        .json({ error: 'Password must be at least 3 characters long' });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { hashedPassword },
+      { new: true }
+    ).select('-hashedPassword');
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update password' });
+  }
+};
+
 const checkForLastAdmin = async (userId, newIsAdmin) => {
   const user = await User.findById(userId);
   if (user.isAdmin && !newIsAdmin) {
@@ -97,4 +129,5 @@ module.exports = {
   getAllUsers,
   updateUser,
   deleteUser,
+  updatePassword,
 };
