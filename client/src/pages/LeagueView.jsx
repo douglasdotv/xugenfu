@@ -14,15 +14,50 @@ import {
   Alert,
   CircularProgress,
   Button,
-  IconButton,
   Tooltip,
 } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import { CheckCircle, Cancel } from '@mui/icons-material';
 import { AuthContext } from '../contexts/AuthContext';
 import leagueService from '../services/leagueService';
 import VoidMatchDialog from '../components/VoidMatchDialog';
 import Leaderboard from '../components/Leaderboard';
 import UserScores from '../components/UserScores';
+
+const StatusCell = ({ match, isAdmin, onEditClick }) => {
+  const handleClick = (e) => {
+    if (isAdmin) {
+      e.stopPropagation();
+      onEditClick();
+    }
+  };
+
+  const icon = match.isVoided ? (
+    <Cancel color="error" sx={{ cursor: isAdmin ? 'pointer' : 'default' }} />
+  ) : (
+    <CheckCircle
+      color="success"
+      sx={{ cursor: isAdmin ? 'pointer' : 'default' }}
+    />
+  );
+
+  return (
+    <Tooltip
+      title={(() => {
+        if (match.isVoided) {
+          return `Voided - ${match.voidReason}`;
+        }
+        if (isAdmin) {
+          return 'Match is not voided (click to edit)';
+        }
+        return 'Match Status';
+      })()}
+    >
+      <Box onClick={handleClick} sx={{ display: 'inline-flex' }}>
+        {icon}
+      </Box>
+    </Tooltip>
+  );
+};
 
 const LeagueView = () => {
   const { fsid } = useParams();
@@ -155,9 +190,6 @@ const LeagueView = () => {
                       <TableCell align="center">Result</TableCell>
                       <TableCell>Away Team</TableCell>
                       <TableCell align="center">Status</TableCell>
-                      {auth?.user?.isAdmin && (
-                        <TableCell align="center">Actions</TableCell>
-                      )}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -198,29 +230,19 @@ const LeagueView = () => {
                           </a>
                         </TableCell>
                         <TableCell align="center">
-                          {match.isVoided ? (
-                            <Typography color="error">
-                              Voided - {match.voidReason}
-                            </Typography>
-                          ) : (
-                            'Valid'
-                          )}
+                          <Box
+                            sx={{ display: 'flex', justifyContent: 'center' }}
+                          >
+                            <StatusCell
+                              match={match}
+                              isAdmin={auth?.user?.isAdmin}
+                              onEditClick={() => {
+                                setSelectedMatch(match);
+                                setVoidDialogOpen(true);
+                              }}
+                            />
+                          </Box>
                         </TableCell>
-                        {auth?.user?.isAdmin && (
-                          <TableCell align="center">
-                            <Tooltip title="Edit Match Status">
-                              <IconButton
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedMatch(match);
-                                  setVoidDialogOpen(true);
-                                }}
-                              >
-                                <Edit />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        )}
                       </TableRow>
                     ))}
                   </TableBody>
