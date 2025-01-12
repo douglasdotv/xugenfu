@@ -142,31 +142,41 @@ const LeagueView = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 2,
-        }}
-      >
-        <Typography variant="h4" component="h1">
-          League: {fsid} {fsid === latestFsid && '(Active)'}
-        </Typography>
-        <Button
-          component={Link}
-          to={`/leagues/${fsid}/predictions`}
-          variant="contained"
-          color="primary"
+      <Box sx={{ mb: 4 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
         >
-          预测
-        </Button>
+          <Typography variant="h4" component="h1">
+            League: {fsid} {fsid === latestFsid && '(Active)'}
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              component={Link}
+              to={`/leagues/${fsid}/predictions`}
+              variant="contained"
+              color="primary"
+            >
+              预测
+            </Button>
+            <Button
+              component={Link}
+              to={`/leagues/${fsid}/history`}
+              variant="contained"
+              color="secondary"
+            >
+              History 【以前的轮次】
+            </Button>
+          </Box>
+        </Box>
       </Box>
-
       <Typography variant="subtitle1" gutterBottom>
         Last Updated: {new Date(league.lastUpdated).toLocaleString()}
       </Typography>
-
       <Box
         sx={{
           display: 'grid',
@@ -256,7 +266,6 @@ const LeagueView = () => {
           {auth && <UserScores fsid={fsid} />}
         </Box>
       </Box>
-
       {selectedMatch && (
         <VoidMatchDialog
           open={voidDialogOpen}

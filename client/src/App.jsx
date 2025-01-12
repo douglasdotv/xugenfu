@@ -11,6 +11,7 @@ import LeagueFetch from './pages/LeagueFetch';
 import UserManagement from './pages/UserManagement';
 import ActiveLeague from './pages/ActiveLeague';
 import LeagueView from './pages/LeagueView';
+import MatchHistory from './pages/MatchHistory';
 import Predictions from './pages/Predictions';
 import DetailedLeaderboard from './pages/DetailedLeaderboard';
 import DetailedScores from './pages/DetailedScores';
@@ -49,6 +50,7 @@ const App = () => {
         />
         <Route path="/leagues/active" element={<ActiveLeague />} />
         <Route path="/leagues/:fsid" element={<LeagueView />} />
+        <Route path="/leagues/:fsid/history" element={<MatchHistory />} />
         <Route
           path="/leagues/:fsid/predictions"
           element={
