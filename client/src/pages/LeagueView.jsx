@@ -159,7 +159,7 @@ const LeagueView = () => {
           variant="contained"
           color="primary"
         >
-          Make Predictions
+          预测
         </Button>
       </Box>
 
