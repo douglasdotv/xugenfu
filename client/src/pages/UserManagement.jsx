@@ -14,7 +14,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
   TextField,
@@ -24,7 +23,13 @@ import {
   FormControlLabel,
   Tooltip,
 } from '@mui/material';
-import { Edit, AdminPanelSettings, Person, Delete } from '@mui/icons-material';
+import {
+  Edit,
+  AdminPanelSettings,
+  Person,
+  Delete,
+  Password,
+} from '@mui/icons-material';
 import { AuthContext } from '../contexts/AuthContext';
 import userService from '../services/userService';
 
@@ -36,6 +41,9 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [formData, setFormData] = useState({
     teamId: '',
     teamName: '',
@@ -78,6 +86,13 @@ const UserManagement = () => {
     setDeleteDialogOpen(true);
   };
 
+  const handlePasswordClick = (user) => {
+    setSelectedUser(user);
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordDialogOpen(true);
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
     setSelectedUser(null);
@@ -89,6 +104,13 @@ const UserManagement = () => {
       email: '',
       isAdmin: false,
     });
+  };
+
+  const handlePasswordClose = () => {
+    setPasswordDialogOpen(false);
+    setSelectedUser(null);
+    setNewPassword('');
+    setConfirmPassword('');
   };
 
   const handleDeleteClose = () => {
@@ -105,6 +127,24 @@ const UserManagement = () => {
       handleDeleteClose();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to delete user');
+    }
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    if (newPassword.length < 3) {
+      setError('Password must be at least 3 characters long');
+      return;
+    }
+    try {
+      await userService.updatePassword(selectedUser.id, newPassword);
+      handlePasswordClose();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update password');
     }
   };
 
@@ -193,6 +233,12 @@ const UserManagement = () => {
                         disabled={!auth?.user?.isAdmin}
                       >
                         <Edit />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handlePasswordClick(user)}
+                        disabled={!auth?.user?.isAdmin}
+                      >
+                        <Password />
                       </IconButton>
                       <IconButton
                         onClick={() => handleDeleteClick(user)}
@@ -305,10 +351,8 @@ const UserManagement = () => {
       >
         <DialogTitle>Confirm User Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete the user {selectedUser?.username}?
-            This action cannot be undone.
-          </DialogContentText>
+          Are you sure you want to delete the user {selectedUser?.username}?
+          This action cannot be undone.
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteClose}>Cancel</Button>
@@ -320,6 +364,43 @@ const UserManagement = () => {
             Delete User
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={passwordDialogOpen}
+        onClose={handlePasswordClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Change Password for {selectedUser?.username}</DialogTitle>
+        <form onSubmit={handlePasswordSubmit}>
+          <DialogContent>
+            <TextField
+              label="New Password"
+              type="password"
+              fullWidth
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              margin="normal"
+            />
+            <TextField
+              label="Confirm Password"
+              type="password"
+              fullWidth
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              margin="normal"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handlePasswordClose}>Cancel</Button>
+            <Button type="submit" variant="contained" color="primary">
+              Update Password
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
 
       <Typography
