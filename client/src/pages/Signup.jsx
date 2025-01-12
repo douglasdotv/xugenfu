@@ -12,6 +12,9 @@ import {
   Paper,
 } from '@mui/material';
 
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEAMID_REGEX = /^\d+$/;
+
 const Signup = () => {
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -26,39 +29,57 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [teamIdError, setTeamIdError] = useState('');
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    if (confirmPassword && e.target.value !== confirmPassword) {
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailError('Please enter a valid email address');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (!TEAMID_REGEX.test(teamId)) {
+      setTeamIdError('Team ID must be a number');
+      isValid = false;
+    } else {
+      setTeamIdError('');
+    }
+
+    if (password !== confirmPassword) {
       setConfirmPasswordError('Passwords do not match');
+      isValid = false;
     } else {
       setConfirmPasswordError('');
     }
-  };
 
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-    if (password && e.target.value !== password) {
-      setConfirmPasswordError('Passwords do not match');
-    } else {
-      setConfirmPasswordError('');
+    if (username.length < 3) {
+      setError('Username must be at least 3 characters long');
+      isValid = false;
     }
+
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    setError('');
+
+    if (!validateForm()) {
       return;
     }
+
     try {
       await authService.register({
         username,
-        email,
-        name,
-        mzUsername,
-        teamId,
-        teamName,
+        email: email.toLowerCase().trim(),
+        name: name.trim(),
+        mzUsername: mzUsername.trim(),
+        teamId: teamId.trim(),
+        teamName: teamName.trim(),
         password,
       });
       navigate('/login');
@@ -73,21 +94,9 @@ const Signup = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-          <Typography
-            variant="h4"
-            component="h1"
-            gutterBottom
-            sx={{ textAlign: 'center', mb: 3 }}
-          >
+      <Box sx={{ marginTop: 8 }}>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom align="center">
             Signup
           </Typography>
           {error && (
@@ -95,7 +104,7 @@ const Signup = () => {
               {error}
             </Alert>
           )}
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
               label="Username"
               fullWidth
@@ -103,15 +112,19 @@ const Signup = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              error={error.includes('Username')}
               sx={{ mb: 2 }}
             />
             <TextField
               label="Email"
+              type="email"
               fullWidth
               margin="normal"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              error={!!emailError}
+              helperText={emailError}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -128,6 +141,7 @@ const Signup = () => {
               margin="normal"
               value={mzUsername}
               onChange={(e) => setMzUsername(e.target.value)}
+              required
               sx={{ mb: 2 }}
             />
             <TextField
@@ -136,6 +150,9 @@ const Signup = () => {
               margin="normal"
               value={teamId}
               onChange={(e) => setTeamId(e.target.value)}
+              required
+              error={!!teamIdError}
+              helperText={teamIdError}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -144,6 +161,7 @@ const Signup = () => {
               margin="normal"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
+              required
               sx={{ mb: 2 }}
             />
             <TextField
@@ -152,7 +170,7 @@ const Signup = () => {
               fullWidth
               margin="normal"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
               required
               sx={{ mb: 2 }}
             />
@@ -162,9 +180,9 @@ const Signup = () => {
               fullWidth
               margin="normal"
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              error={Boolean(confirmPasswordError)}
+              error={!!confirmPasswordError}
               helperText={confirmPasswordError}
               sx={{ mb: 3 }}
             />
@@ -176,7 +194,7 @@ const Signup = () => {
               size="large"
               sx={{ mt: 2, mb: 2, py: 1.5 }}
             >
-              Create
+              Create Account
             </Button>
           </Box>
         </Paper>
