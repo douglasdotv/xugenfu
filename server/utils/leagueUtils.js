@@ -1,8 +1,13 @@
 const cheerio = require('cheerio');
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const { APP_ELECTED_TIMEZONE } = require('../utils/config');
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 const logger = require('./logger');
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
 
 const ROUND_PATTERNS = {
@@ -13,11 +18,6 @@ const ROUND_PATTERNS = {
 const DATE_FORMATS = {
   CHINESE: 'YYYY-MM-DD HH:mm',
   ENGLISH: 'DD/MM/YYYY h:mma',
-};
-
-const TIME_ADJUSTMENT = {
-  HOURS: 3,
-  REASON: 'Adjustment needed when fetching via automated process',
 };
 
 const parseRoundText = (text) => {
@@ -58,22 +58,13 @@ const parseLeagueData = (html) => {
 
     const { roundNumber, dateStr, format } = parsedRound;
 
-    let parsed = dayjs(dateStr, format);
+    let parsed = dayjs.tz(dateStr, format, APP_ELECTED_TIMEZONE);
     if (!parsed.isValid()) {
       logger.error(
         `Invalid date detected for round ${roundNumber}: ${dateStr}`
       );
       return;
     }
-
-    logger.info(
-      `Round ${roundNumber} original time: ${parsed.format(
-        'YYYY-MM-DD HH:mm:ss Z'
-      )}`
-    );
-
-    // Fix for Shanghai timezone
-    parsed = parsed.subtract(TIME_ADJUSTMENT.HOURS, 'hour');
     logger.info(
       `Round ${roundNumber} adjusted time: ${parsed.format(
         'YYYY-MM-DD HH:mm:ss Z'

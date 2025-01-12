@@ -1,6 +1,12 @@
 const League = require('../models/league');
 const Prediction = require('../models/prediction');
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+const { APP_ELECTED_TIMEZONE } = require('../utils/config');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const getAvailableMatches = async (req, res) => {
   try {
@@ -19,13 +25,16 @@ const getAvailableMatches = async (req, res) => {
 
       if (roundDate > now) {
         round.matches.forEach((match) => {
-          const deadline = dayjs(roundDate).subtract(2, 'hour');
+          const deadline = dayjs(roundDate)
+            .tz(APP_ELECTED_TIMEZONE)
+            .subtract(2, 'hour')
+            .toDate();
 
-          if (deadline.isAfter(dayjs())) {
+          if (dayjs().tz(APP_ELECTED_TIMEZONE).isBefore(deadline)) {
             availableMatches.push({
               roundNumber: round.roundNumber,
               matchDate: roundDate,
-              deadline: deadline.toDate(),
+              deadline,
               ...match.toObject(),
             });
           }
@@ -82,7 +91,9 @@ const submitPrediction = async (req, res) => {
       return res.status(400).json({ error: 'Cannot predict past matches' });
     }
 
-    const deadline = dayjs(matchDate).subtract(2, 'hour');
+    const deadline = dayjs(matchDate)
+      .tz(APP_ELECTED_TIMEZONE)
+      .subtract(2, 'hour');
     if (dayjs().isAfter(deadline)) {
       return res.status(400).json({ error: 'Prediction deadline has passed' });
     }
