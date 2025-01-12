@@ -12,13 +12,13 @@ const ActiveLeague = () => {
     (async () => {
       try {
         const data = await leagueService.getActiveLeague();
-        if (data && data.fsid) {
+        if (data?.fsid) {
           navigate(`/leagues/${data.fsid}`);
         } else {
           setError('No league found');
         }
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch latest league');
+        setError(err.response?.data?.error ?? 'Failed to fetch latest league');
       } finally {
         setLoading(false);
       }
