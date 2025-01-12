@@ -63,6 +63,7 @@ const LeagueView = () => {
   const { fsid } = useParams();
   const { auth } = useContext(AuthContext);
   const [league, setLeague] = useState(null);
+  const [latestFsid, setLatestFsid] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedMatch, setSelectedMatch] = useState(null);
@@ -78,6 +79,13 @@ const LeagueView = () => {
       } finally {
         setLoading(false);
       }
+
+      try {
+        const activeLeague = await leagueService.getActiveLeague();
+        setLatestFsid(activeLeague.fsid);
+      } catch {
+        setError('Failed to fetch latest league');
+      }
     };
 
     fetchLeague();
@@ -91,7 +99,6 @@ const LeagueView = () => {
         isVoided,
         voidReason
       );
-
       const updatedLeague = {
         ...league,
         rounds: league.rounds.map((round) => ({
@@ -111,14 +118,7 @@ const LeagueView = () => {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '60vh',
-        }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
         <CircularProgress />
       </Box>
     );
@@ -151,7 +151,7 @@ const LeagueView = () => {
         }}
       >
         <Typography variant="h4" component="h1">
-          Active League
+          League: {fsid} {fsid === latestFsid && '(Active)'}
         </Typography>
         <Button
           component={Link}
