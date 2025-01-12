@@ -10,7 +10,12 @@ const updateUser = async (userId, userData) => {
   return response.data;
 };
 
+const deleteUser = async (userId) => {
+  await authApiClient.delete(`/users/${userId}`);
+};
+
 export default {
   getAllUsers,
   updateUser,
+  deleteUser,
 };

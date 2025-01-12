@@ -14,6 +14,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   Button,
   TextField,
@@ -23,7 +24,7 @@ import {
   FormControlLabel,
   Tooltip,
 } from '@mui/material';
-import { Edit, AdminPanelSettings, Person } from '@mui/icons-material';
+import { Edit, AdminPanelSettings, Person, Delete } from '@mui/icons-material';
 import { AuthContext } from '../contexts/AuthContext';
 import userService from '../services/userService';
 
@@ -34,6 +35,7 @@ const UserManagement = () => {
   const [error, setError] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     teamId: '',
     teamName: '',
@@ -50,7 +52,6 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       const data = await userService.getAllUsers();
-      console.log(data);
       setUsers(data);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to fetch users');
@@ -72,6 +73,11 @@ const UserManagement = () => {
     setDialogOpen(true);
   };
 
+  const handleDeleteClick = (user) => {
+    setSelectedUser(user);
+    setDeleteDialogOpen(true);
+  };
+
   const handleClose = () => {
     setDialogOpen(false);
     setSelectedUser(null);
@@ -83,6 +89,23 @@ const UserManagement = () => {
       email: '',
       isAdmin: false,
     });
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteDialogOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await userService.deleteUser(selectedUser.id);
+      setUsers((prevUsers) =>
+        prevUsers.filter((user) => user.id !== selectedUser.id)
+      );
+      handleDeleteClose();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to delete user');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -162,12 +185,25 @@ const UserManagement = () => {
                   <TableCell>{user.teamId}</TableCell>
                   <TableCell>{user.teamName}</TableCell>
                   <TableCell align="center">
-                    <IconButton
-                      onClick={() => handleEditClick(user)}
-                      disabled={!auth?.user?.isAdmin}
+                    <Box
+                      sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}
                     >
-                      <Edit />
-                    </IconButton>
+                      <IconButton
+                        onClick={() => handleEditClick(user)}
+                        disabled={!auth?.user?.isAdmin}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteClick(user)}
+                        disabled={
+                          !auth?.user?.isAdmin || user.id === auth.user.id
+                        }
+                        color="error"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
@@ -175,16 +211,6 @@ const UserManagement = () => {
           </Table>
         </TableContainer>
       </Paper>
-
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        display="block"
-        align="center"
-        sx={{ mt: 2 }}
-      >
-        Note: only xugenfu106/admin can see this page.
-      </Typography>
 
       <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>
@@ -270,6 +296,41 @@ const UserManagement = () => {
           </DialogActions>
         </form>
       </Dialog>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Confirm User Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete the user {selectedUser?.username}?
+            This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose}>Cancel</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+          >
+            Delete User
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        display="block"
+        align="center"
+        sx={{ mt: 2 }}
+      >
+        Note: only xugenfu106/admin can see this page.
+      </Typography>
     </Container>
   );
 };
