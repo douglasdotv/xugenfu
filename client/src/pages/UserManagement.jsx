@@ -176,6 +176,16 @@ const UserManagement = () => {
         </TableContainer>
       </Paper>
 
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        display="block"
+        align="center"
+        sx={{ mt: 2 }}
+      >
+        Note: only xugenfu106/admin can see this page.
+      </Typography>
+
       <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
