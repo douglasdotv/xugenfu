@@ -50,7 +50,14 @@ const App = () => {
         />
         <Route path="/leagues/active" element={<ActiveLeague />} />
         <Route path="/leagues/:fsid" element={<LeagueView />} />
-        <Route path="/leagues/:fsid/history" element={<MatchHistory />} />
+        <Route
+          path="/leagues/:fsid/history"
+          element={
+            <PrivateRoute>
+              <MatchHistory />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/leagues/:fsid/predictions"
           element={
