@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const MATCH_OUTCOMES = {
+  HOME_WIN: 'HOME_WIN',
+  DRAW: 'DRAW',
+  AWAY_WIN: 'AWAY_WIN',
+};
+
 const predictionSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -17,13 +23,8 @@ const predictionSchema = new mongoose.Schema({
   prediction: {
     type: String,
     required: true,
-    validate: {
-      validator: function (v) {
-        return /^\d+-\d+$/.test(v);
-      },
-      message: (props) =>
-        `${props.value} is not a valid score format! Use format: 0-0`,
-    },
+    enum: Object.values(MATCH_OUTCOMES),
+    message: '{VALUE} is not a valid prediction!',
   },
   createdAt: {
     type: Date,
@@ -44,4 +45,7 @@ predictionSchema.pre('save', function (next) {
 
 const Prediction = mongoose.model('Prediction', predictionSchema);
 
-module.exports = Prediction;
+module.exports = {
+  Prediction,
+  MATCH_OUTCOMES,
+};

@@ -1,5 +1,5 @@
 const League = require('../models/league');
-const Prediction = require('../models/prediction');
+const { Prediction, MATCH_OUTCOMES } = require('../models/prediction');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
@@ -65,6 +65,10 @@ const submitPrediction = async (req, res) => {
     const { matchId } = req.params;
     const { prediction, fsid } = req.body;
     const userId = req.user._id;
+
+    if (!Object.values(MATCH_OUTCOMES).includes(prediction)) {
+      return res.status(400).json({ error: 'Invalid prediction value' });
+    }
 
     const league = await League.findOne({ fsid });
     if (!league) {

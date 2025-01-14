@@ -1,33 +1,40 @@
 const User = require('../models/user');
+const { MATCH_OUTCOMES } = require('../models/prediction');
+
+const POINTS_FOR_CORRECT = 3;
+const POINTS_FOR_INCORRECT = 0;
+
+const getMatchOutcome = (result) => {
+  if (!result || typeof result !== 'string') return null;
+
+  const scores = result.trim().split('-');
+  if (scores.length !== 2) return null;
+
+  const [homeScore, awayScore] = scores.map((s) => parseInt(s, 10));
+  if (isNaN(homeScore) || isNaN(awayScore)) return null;
+
+  if (homeScore > awayScore) return MATCH_OUTCOMES.HOME_WIN;
+  if (homeScore < awayScore) return MATCH_OUTCOMES.AWAY_WIN;
+  return MATCH_OUTCOMES.DRAW;
+};
 
 const calculateRoundScore = (predictions, matches) => {
   const validMatches = matches.filter((match) => !match.isVoided);
-  const totalMatches = validMatches.length;
 
-  if (totalMatches === 0) return 0;
-
-  let correctPredictions = 0;
+  let totalPoints = 0;
 
   validMatches.forEach((match) => {
     const prediction = predictions.find((p) => p.matchId === match.matchId);
-    if (prediction && match.result && prediction.prediction === match.result) {
-      correctPredictions++;
-    }
+    if (!prediction || !match.result) return;
+
+    const actualOutcome = getMatchOutcome(match.result);
+    totalPoints +=
+      prediction.prediction === actualOutcome
+        ? POINTS_FOR_CORRECT
+        : POINTS_FOR_INCORRECT;
   });
 
-  const scoreTable = {
-    8: { pointsPerMatch: 3, total: 24 },
-    7: { pointsPerMatch: 2.5, total: 17.5 },
-    6: { pointsPerMatch: 2, total: 12 },
-    5: { pointsPerMatch: 1.5, total: 7.5 },
-    4: { pointsPerMatch: 1, total: 4 },
-    3: { pointsPerMatch: 1, total: 3 },
-    2: { pointsPerMatch: 1, total: 2 },
-    1: { pointsPerMatch: 1, total: 1 },
-    0: { pointsPerMatch: 0, total: 0 },
-  };
-
-  return scoreTable[correctPredictions]?.total || 0;
+  return totalPoints;
 };
 
 const calculateLeaderboard = async (league, predictions) => {
@@ -35,53 +42,51 @@ const calculateLeaderboard = async (league, predictions) => {
     {},
     'username name mzUsername teamId teamName'
   );
-  const activeUserIds = activeUsers.reduce((map, user) => {
-    map[user._id.toString()] = user;
-    return map;
-  }, {});
-
-  const activePredictions = predictions.filter(
-    (prediction) => activeUserIds[prediction.userId.toString()]
-  );
 
   const userScores = {};
-
-  activePredictions.forEach((prediction) => {
-    if (!userScores[prediction.userId]) {
-      userScores[prediction.userId] = {
-        userId: prediction.userId,
-        totalPoints: 0,
-        roundScores: {},
-      };
-    }
+  activeUsers.forEach((user) => {
+    userScores[user._id.toString()] = {
+      userId: user._id,
+      totalPoints: 0,
+      roundScores: {},
+    };
   });
 
-  league.rounds.forEach((round) => {
-    const roundPredictions = activePredictions.filter((prediction) =>
-      round.matches.some((match) => match.matchId === prediction.matchId)
-    );
+  if (predictions && predictions.length > 0) {
+    league.rounds.forEach((round) => {
+      const roundPredictions = predictions.filter((prediction) =>
+        round.matches.some((match) => match.matchId === prediction.matchId)
+      );
 
-    const userRoundPredictions = {};
-    roundPredictions.forEach((prediction) => {
-      if (!userRoundPredictions[prediction.userId]) {
-        userRoundPredictions[prediction.userId] = [];
-      }
-      userRoundPredictions[prediction.userId].push(prediction);
+      const userRoundPredictions = {};
+      roundPredictions.forEach((prediction) => {
+        if (!userRoundPredictions[prediction.userId]) {
+          userRoundPredictions[prediction.userId] = [];
+        }
+        userRoundPredictions[prediction.userId].push(prediction);
+      });
+
+      Object.entries(userRoundPredictions).forEach(
+        ([userId, userPredictions]) => {
+          const roundScore = calculateRoundScore(
+            userPredictions,
+            round.matches
+          );
+          if (userScores[userId]) {
+            userScores[userId].roundScores[round.roundNumber] = roundScore;
+            userScores[userId].totalPoints += roundScore;
+          }
+        }
+      );
     });
-
-    Object.entries(userRoundPredictions).forEach(
-      ([userId, userPredictions]) => {
-        const roundScore = calculateRoundScore(userPredictions, round.matches);
-        userScores[userId].roundScores[round.roundNumber] = roundScore;
-        userScores[userId].totalPoints += roundScore;
-      }
-    );
-  });
+  }
 
   return Object.values(userScores)
     .sort((a, b) => b.totalPoints - a.totalPoints)
     .map((score, index) => {
-      const user = activeUserIds[score.userId.toString()];
+      const user = activeUsers.find(
+        (u) => u._id.toString() === score.userId.toString()
+      );
       return {
         ...score,
         rank: index + 1,
@@ -97,4 +102,6 @@ const calculateLeaderboard = async (league, predictions) => {
 module.exports = {
   calculateRoundScore,
   calculateLeaderboard,
+  POINTS_FOR_CORRECT,
+  POINTS_FOR_INCORRECT,
 };

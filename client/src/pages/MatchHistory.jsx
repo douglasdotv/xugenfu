@@ -149,10 +149,6 @@ const MatchHistory = () => {
                   <TableBody>
                     {round.matches.map((match) => {
                       const prediction = userPredictions[match.matchId];
-                      const isCorrect =
-                        prediction &&
-                        match.result &&
-                        prediction === match.result;
 
                       return (
                         <TableRow
@@ -178,7 +174,12 @@ const MatchHistory = () => {
                           </TableCell>
                           <TableCell>{match.awayTeam}</TableCell>
                           <TableCell align="center">
-                            {prediction || '-'}
+                            {(() => {
+                              if (!prediction) return '-';
+                              if (prediction === 'HOME_WIN') return '主赢';
+                              if (prediction === 'DRAW') return '平局';
+                              return '客赢';
+                            })()}
                           </TableCell>
                           <TableCell align="center">
                             {(() => {
@@ -191,7 +192,7 @@ const MatchHistory = () => {
                                   />
                                 );
                               }
-                              if (!prediction) {
+                              if (!prediction || !match.result) {
                                 return (
                                   <Typography
                                     variant="body2"
@@ -201,6 +202,19 @@ const MatchHistory = () => {
                                   </Typography>
                                 );
                               }
+
+                              const [homeScore, awayScore] = match.result
+                                .split('-')
+                                .map(Number);
+                              let actualOutcome;
+                              if (homeScore > awayScore)
+                                actualOutcome = 'HOME_WIN';
+                              else if (homeScore < awayScore)
+                                actualOutcome = 'AWAY_WIN';
+                              else actualOutcome = 'DRAW';
+
+                              const isCorrect = prediction === actualOutcome;
+
                               return isCorrect ? (
                                 <Check color="success" />
                               ) : (
