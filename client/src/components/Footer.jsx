@@ -22,15 +22,20 @@ const Footer = () => {
         rel="noopener noreferrer"
         sx={{
           color: 'text.secondary',
+          border: '1px solid',
+          marginRight: '8px',
           textDecoration: 'none',
           fontFamily: 'monospace',
-          fontSize: '0.875rem',
+          fontSize: '1rem',
           '&:hover': {
             color: 'primary.main',
           },
+          '@media (max-width: 600px)': {
+            fontSize: '0.8rem',
+          },
         }}
       >
-        道格拉斯
+        Oi
       </Link>
     </Box>
   );
