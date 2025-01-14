@@ -36,7 +36,7 @@ const VoidMatchDialog = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        Update Match Status: {match?.homeTeam} vs {match?.awayTeam}
+        更新比赛状态: {match?.homeTeam} 对 {match?.awayTeam}
       </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
@@ -48,12 +48,12 @@ const VoidMatchDialog = ({
                   onChange={(e) => setIsVoided(e.target.checked)}
                 />
               }
-              label="Mark as Voided"
+              label="标记为无效比赛"
             />
           </Box>
           {isVoided && (
             <TextField
-              label="Void Reason"
+              label="无效原因"
               fullWidth
               value={voidReason}
               onChange={(e) => setVoidReason(e.target.value)}
@@ -64,9 +64,9 @@ const VoidMatchDialog = ({
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>取消</Button>
           <Button type="submit" variant="contained" color="primary">
-            Save
+            保存
           </Button>
         </DialogActions>
       </form>

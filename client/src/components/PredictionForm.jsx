@@ -40,12 +40,12 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
     e.preventDefault();
 
     if (!homeScore || !awayScore) {
-      setError('Please enter both scores');
+      setError('请输入两队比分');
       return;
     }
 
     if (isNaN(homeScore) || isNaN(awayScore)) {
-      setError('Scores must be numbers');
+      setError('比分必须是数字');
       return;
     }
 
@@ -65,7 +65,7 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
 
   const deadlineTime = dayjs(match.deadline)
     .tz(CHINA_TIMEZONE)
-    .format('MMM D, YYYY h:mm A');
+    .format('YYYY年MM月DD日 HH:mm');
 
   const isDeadlinePassed = dayjs()
     .tz(CHINA_TIMEZONE)
@@ -102,14 +102,14 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
               sx={{ fontWeight: 'bold', color: 'text.primary' }}
             >
               {match.homeTeam} vs {match.awayTeam}
-            </Typography>{' '}
+            </Typography>
           </Typography>
           <Box>
             {existingPrediction ? (
               <Fade in>
                 <Chip
                   icon={<Check />}
-                  label={`Prediction: ${existingPrediction}`}
+                  label={`已预测: ${existingPrediction}`}
                   color="success"
                   variant="outlined"
                   size="small"
@@ -123,10 +123,10 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
           <Timer sx={{ color: 'text.secondary', fontSize: '1rem' }} />
           <Typography variant="body2" color="text.secondary">
             {isDeadlinePassed ? (
-              'Deadline has passed'
+              '已过截止时间'
             ) : (
               <>
-                Deadline: {deadlineTime} ({timeToDeadline} hours remaining)
+                截止时间: {deadlineTime} (剩余 {timeToDeadline} 小时)
               </>
             )}
           </Typography>
@@ -140,7 +140,7 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
               color: 'error.dark',
             }}
           >
-            Prediction deadline has passed
+            预测截止时间已过
           </Alert>
         ) : (
           <Box component="form" onSubmit={handleSubmit}>
@@ -204,7 +204,7 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
                   },
                 }}
               >
-                {existingPrediction ? 'Update' : 'Submit'}
+                {existingPrediction ? '更新预测' : '提交预测'}
               </Button>
             </Box>
           </Box>

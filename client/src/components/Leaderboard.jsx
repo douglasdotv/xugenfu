@@ -27,7 +27,7 @@ const Leaderboard = ({ fsid }) => {
         const data = await scoringService.getLeaderboard(fsid);
         setLeaderboard(data);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch leaderboard');
+        setError(err.response?.data?.error || '获取排行榜失败');
       } finally {
         setLoading(false);
       }
@@ -58,16 +58,16 @@ const Leaderboard = ({ fsid }) => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">Leaderboard</Typography>
+        <Typography variant="h5">排行榜</Typography>
       </Box>
 
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Rank</TableCell>
-              <TableCell>Player</TableCell>
-              <TableCell align="right">Total Points</TableCell>
+              <TableCell>排名</TableCell>
+              <TableCell>玩家</TableCell>
+              <TableCell align="right">总分</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -102,7 +102,7 @@ const Leaderboard = ({ fsid }) => {
           variant="outlined"
           size="small"
         >
-          View Full Leaderboard
+          查看完整排行榜
         </Button>
       </Box>
     </Paper>

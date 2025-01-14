@@ -27,7 +27,7 @@ const CurrentRound = () => {
         const league = await leagueService.getActiveLeague();
 
         if (!league) {
-          setError('No active league found');
+          setError('未找到活跃联赛');
           return;
         }
 
@@ -38,7 +38,7 @@ const CurrentRound = () => {
         });
 
         if (!nextRound) {
-          setError('No upcoming rounds found');
+          setError('未找到即将进行的场次');
           return;
         }
 
@@ -58,7 +58,7 @@ const CurrentRound = () => {
           fsid: league.fsid,
         });
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to load data');
+        setError(err.response?.data?.error || '加载数据失败');
       } finally {
         setLoading(false);
       }
@@ -81,7 +81,7 @@ const CurrentRound = () => {
         [matchId]: prediction,
       }));
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to submit prediction');
+      setError(err.response?.data?.error || '提交预测失败');
     }
   };
 
@@ -89,6 +89,9 @@ const CurrentRound = () => {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
         <CircularProgress />
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          场次信息加载中...
+        </Typography>
       </Box>
     );
   }
@@ -97,7 +100,7 @@ const CurrentRound = () => {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
+          错误：{error}
         </Alert>
       </Container>
     );
@@ -106,7 +109,7 @@ const CurrentRound = () => {
   if (!currentRound) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Alert severity="info">No upcoming matches found</Alert>
+        <Alert severity="info">未找到即将进行的比赛</Alert>
       </Container>
     );
   }
@@ -115,13 +118,13 @@ const CurrentRound = () => {
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Round {currentRound.roundNumber} -{' '}
+          第 {currentRound.roundNumber} 轮 -{' '}
           {new Date(currentRound.date).toLocaleDateString()}
         </Typography>
 
         {!auth && (
           <Alert severity="info" sx={{ mb: 2 }}>
-            Please <Link to="/login">log in</Link> to make predictions
+            提示：请 <Link to="/login">登录</Link> 后进行预测
           </Alert>
         )}
 
@@ -131,7 +134,7 @@ const CurrentRound = () => {
           variant="outlined"
           sx={{ mb: 3 }}
         >
-          View Full League
+          查看完整联赛
         </Button>
       </Box>
 

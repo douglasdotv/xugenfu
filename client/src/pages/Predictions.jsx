@@ -36,7 +36,7 @@ const Predictions = () => {
         });
         setUserPredictions(predictionsMap);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch data');
+        setError(err.response?.data?.error || '数据获取失败');
       } finally {
         setLoading(false);
       }
@@ -54,7 +54,7 @@ const Predictions = () => {
         [matchId]: prediction,
       }));
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to submit prediction');
+      setError(err.response?.data?.error || '提交预测失败');
     }
   };
 
@@ -80,7 +80,7 @@ const Predictions = () => {
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Match Predictions
+        比赛预测
       </Typography>
 
       {error && (
@@ -99,7 +99,7 @@ const Predictions = () => {
           {rounds.map((round) => (
             <Tab
               key={round}
-              label={`Round ${round}`}
+              label={`第 ${round} 轮`}
               id={`round-tab-${round}`}
             />
           ))}
@@ -116,7 +116,7 @@ const Predictions = () => {
           {activeTab === index && (
             <Box>
               <Typography variant="h6" gutterBottom>
-                Round {round}
+                第 {round} 轮
               </Typography>
               {matchesByRound[round].map((match) => (
                 <PredictionForm

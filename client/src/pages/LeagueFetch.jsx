@@ -23,13 +23,13 @@ const LeagueFetch = () => {
       await leagueService.fetchLeagueData(fsid, phpsessid);
       setStatus({
         type: 'success',
-        message: 'League data fetched successfully',
+        message: '联赛数据获取成功',
       });
       navigate(`/leagues/${fsid}`);
     } catch (err) {
       setStatus({
         type: 'error',
-        message: err.response?.data?.error || 'Failed to fetch league data',
+        message: err.response?.data?.error || '获取联赛数据失败',
       });
     }
   };
@@ -39,7 +39,7 @@ const LeagueFetch = () => {
       <Box sx={{ marginTop: 8 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
-            Fetch Friendly League Data
+            获取友谊赛联赛数据
           </Typography>
           {status.message && (
             <Alert severity={status.type} sx={{ mb: 2 }}>
@@ -48,7 +48,7 @@ const LeagueFetch = () => {
           )}
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
-              label="Friendly League ID (fsid)"
+              label="友谊赛联赛 ID (fsid)"
               fullWidth
               margin="normal"
               value={fsid}
@@ -72,7 +72,7 @@ const LeagueFetch = () => {
               size="large"
               sx={{ mt: 2 }}
             >
-              Fetch Data
+              获取数据
             </Button>
             <Typography
               variant="caption"
@@ -81,7 +81,7 @@ const LeagueFetch = () => {
               align="center"
               sx={{ mt: 2 }}
             >
-              Note: only xugenfu106/admin can see this page.
+              注意：仅 xugenfu106/admin 用户可以查看此页面。
             </Typography>
           </Box>
         </Paper>

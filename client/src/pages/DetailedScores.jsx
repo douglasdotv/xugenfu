@@ -30,7 +30,7 @@ const DetailedScores = () => {
         const data = await scoringService.getUserScores(fsid);
         setScores(data);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch scores');
+        setError(err.response?.data?.error || '分数获取失败');
       } finally {
         setLoading(false);
       }
@@ -64,10 +64,10 @@ const DetailedScores = () => {
           startIcon={<ArrowBack />}
           sx={{ mb: 2 }}
         >
-          Back to League
+          返回联赛
         </Button>
         <Typography variant="h4" gutterBottom>
-          Your Detailed Scores
+          你的详细分数
         </Typography>
       </Box>
 
@@ -81,13 +81,13 @@ const DetailedScores = () => {
         <Box>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>
-              Summary
+              概览
             </Typography>
             <Typography variant="h3" color="primary">
               {scores.totalScore}
             </Typography>
             <Typography variant="subtitle1" color="text.secondary">
-              Total Points
+              总分
             </Typography>
           </Paper>
         </Box>
@@ -95,15 +95,15 @@ const DetailedScores = () => {
         <Box>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" gutterBottom>
-              Round Details
+              每轮详情
             </Typography>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Round</TableCell>
-                    <TableCell align="right">Points</TableCell>
-                    <TableCell>Predictions</TableCell>
+                    <TableCell>轮次</TableCell>
+                    <TableCell align="right">分数</TableCell>
+                    <TableCell>预测</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -111,7 +111,7 @@ const DetailedScores = () => {
                     .sort((a, b) => b.roundNumber - a.roundNumber)
                     .map((round) => (
                       <TableRow key={round.roundNumber}>
-                        <TableCell>Round {round.roundNumber}</TableCell>
+                        <TableCell>第 {round.roundNumber} 轮</TableCell>
                         <TableCell align="right">{round.score}</TableCell>
                         <TableCell>
                           {round.predictions.map((pred) => (

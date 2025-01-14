@@ -62,7 +62,7 @@ const UserManagement = () => {
       const data = await userService.getAllUsers();
       setUsers(data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to fetch users');
+      setError(err.response?.data?.error || '获取用户列表失败');
     } finally {
       setLoading(false);
     }
@@ -126,25 +126,25 @@ const UserManagement = () => {
       );
       handleDeleteClose();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to delete user');
+      setError(err.response?.data?.error || '删除用户失败');
     }
   };
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('两次输入的密码不一致');
       return;
     }
     if (newPassword.length < 3) {
-      setError('Password must be at least 3 characters long');
+      setError('密码长度至少为3个字符');
       return;
     }
     try {
       await userService.updatePassword(selectedUser.id, newPassword);
       handlePasswordClose();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to update password');
+      setError(err.response?.data?.error || '更新密码失败');
     }
   };
 
@@ -162,7 +162,7 @@ const UserManagement = () => {
       );
       handleClose();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to update user');
+      setError(err.response?.data?.error || '更新用户信息失败');
     }
   };
 
@@ -177,7 +177,7 @@ const UserManagement = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        User Management
+        用户管理
       </Typography>
 
       {error && (
@@ -191,14 +191,14 @@ const UserManagement = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Role</TableCell>
-                <TableCell>Username</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>MZ Username</TableCell>
-                <TableCell>Team ID</TableCell>
-                <TableCell>Team Name</TableCell>
-                <TableCell align="center">Actions</TableCell>
+                <TableCell>角色</TableCell>
+                <TableCell>用户名</TableCell>
+                <TableCell>姓名</TableCell>
+                <TableCell>邮箱</TableCell>
+                <TableCell>MZ用户名</TableCell>
+                <TableCell>队伍ID</TableCell>
+                <TableCell>队伍名称</TableCell>
+                <TableCell align="center">操作</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -208,7 +208,7 @@ const UserManagement = () => {
                   sx={user.isAdmin ? { backgroundColor: 'action.hover' } : {}}
                 >
                   <TableCell>
-                    <Tooltip title={user.isAdmin ? 'Admin' : 'User'}>
+                    <Tooltip title={user.isAdmin ? '管理员' : '普通用户'}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {user.isAdmin ? (
                           <AdminPanelSettings color="primary" />
@@ -231,12 +231,14 @@ const UserManagement = () => {
                       <IconButton
                         onClick={() => handleEditClick(user)}
                         disabled={!auth?.user?.isAdmin}
+                        title="编辑用户"
                       >
                         <Edit />
                       </IconButton>
                       <IconButton
                         onClick={() => handlePasswordClick(user)}
                         disabled={!auth?.user?.isAdmin}
+                        title="修改密码"
                       >
                         <Password />
                       </IconButton>
@@ -246,6 +248,7 @@ const UserManagement = () => {
                           !auth?.user?.isAdmin || user.id === auth.user.id
                         }
                         color="error"
+                        title="删除用户"
                       >
                         <Delete />
                       </IconButton>
@@ -266,13 +269,13 @@ const UserManagement = () => {
             ) : (
               <Person color="action" />
             )}
-            Edit User
+            编辑用户
           </Box>
         </DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
-              label="MZ Username"
+              label="MZ用户名"
               fullWidth
               value={formData.mzUsername}
               onChange={(e) =>
@@ -282,7 +285,7 @@ const UserManagement = () => {
               margin="normal"
             />
             <TextField
-              label="Team ID"
+              label="队伍ID"
               fullWidth
               value={formData.teamId}
               onChange={(e) =>
@@ -292,7 +295,7 @@ const UserManagement = () => {
               margin="normal"
             />
             <TextField
-              label="Team Name"
+              label="队伍名称"
               fullWidth
               value={formData.teamName}
               onChange={(e) =>
@@ -302,7 +305,7 @@ const UserManagement = () => {
               margin="normal"
             />
             <TextField
-              label="Name"
+              label="姓名"
               fullWidth
               value={formData.name}
               onChange={(e) =>
@@ -311,7 +314,7 @@ const UserManagement = () => {
               margin="normal"
             />
             <TextField
-              label="Email"
+              label="邮箱"
               fullWidth
               value={formData.email}
               onChange={(e) =>
@@ -331,13 +334,13 @@ const UserManagement = () => {
                   disabled={!auth?.user?.isAdmin}
                 />
               }
-              label="Admin"
+              label="管理员权限"
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>取消</Button>
             <Button type="submit" variant="contained" color="primary">
-              Save Changes
+              保存修改
             </Button>
           </DialogActions>
         </form>
@@ -349,19 +352,18 @@ const UserManagement = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Confirm User Deletion</DialogTitle>
+        <DialogTitle>确认删除用户</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete the user {selectedUser?.username}?
-          This action cannot be undone.
+          确定要删除用户 {selectedUser?.username} 吗？此操作无法撤销。
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteClose}>Cancel</Button>
+          <Button onClick={handleDeleteClose}>取消</Button>
           <Button
             onClick={handleDeleteConfirm}
             color="error"
             variant="contained"
           >
-            Delete User
+            删除用户
           </Button>
         </DialogActions>
       </Dialog>
@@ -372,11 +374,11 @@ const UserManagement = () => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Change Password for {selectedUser?.username}</DialogTitle>
+        <DialogTitle>修改用户 {selectedUser?.username} 的密码</DialogTitle>
         <form onSubmit={handlePasswordSubmit}>
           <DialogContent>
             <TextField
-              label="New Password"
+              label="新密码"
               type="password"
               fullWidth
               value={newPassword}
@@ -385,7 +387,7 @@ const UserManagement = () => {
               margin="normal"
             />
             <TextField
-              label="Confirm Password"
+              label="确认密码"
               type="password"
               fullWidth
               value={confirmPassword}
@@ -395,9 +397,9 @@ const UserManagement = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handlePasswordClose}>Cancel</Button>
+            <Button onClick={handlePasswordClose}>取消</Button>
             <Button type="submit" variant="contained" color="primary">
-              Update Password
+              更新密码
             </Button>
           </DialogActions>
         </form>
@@ -410,7 +412,7 @@ const UserManagement = () => {
         align="center"
         sx={{ mt: 2 }}
       >
-        Note: only xugenfu106/admin can see this page.
+        提示：只有管理员可以访问此页面
       </Typography>
     </Container>
   );

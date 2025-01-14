@@ -36,28 +36,28 @@ const Signup = () => {
     let isValid = true;
 
     if (!EMAIL_REGEX.test(email)) {
-      setEmailError('Please enter a valid email address');
+      setEmailError('请输入有效的邮箱地址');
       isValid = false;
     } else {
       setEmailError('');
     }
 
     if (!TEAMID_REGEX.test(teamId)) {
-      setTeamIdError('Team ID must be a number');
+      setTeamIdError('队伍ID必须是数字');
       isValid = false;
     } else {
       setTeamIdError('');
     }
 
     if (password !== confirmPassword) {
-      setConfirmPasswordError('Passwords do not match');
+      setConfirmPasswordError('两次输入的密码不一致');
       isValid = false;
     } else {
       setConfirmPasswordError('');
     }
 
     if (username.length < 3) {
-      setError('Username must be at least 3 characters long');
+      setError('用户名至少需要3个字符');
       isValid = false;
     }
 
@@ -84,7 +84,7 @@ const Signup = () => {
       });
       navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to sign up');
+      setError(err.response?.data?.error || '注册失败');
     }
   };
 
@@ -97,7 +97,7 @@ const Signup = () => {
       <Box sx={{ marginTop: 8 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
-            Signup
+            注册新账户
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -106,17 +106,17 @@ const Signup = () => {
           )}
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
-              label="Username"
+              label="用户名"
               fullWidth
               margin="normal"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              error={error.includes('Username')}
+              error={error.includes('用户名')}
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Email"
+              label="邮箱"
               type="email"
               fullWidth
               margin="normal"
@@ -128,7 +128,7 @@ const Signup = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Name"
+              label="姓名"
               fullWidth
               margin="normal"
               value={name}
@@ -136,7 +136,7 @@ const Signup = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="MZ Username"
+              label="MZ用户名"
               fullWidth
               margin="normal"
               value={mzUsername}
@@ -145,7 +145,7 @@ const Signup = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="MZ Team ID"
+              label="MZ队伍ID"
               fullWidth
               margin="normal"
               value={teamId}
@@ -156,7 +156,7 @@ const Signup = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="MZ Team Name"
+              label="MZ队伍名称"
               fullWidth
               margin="normal"
               value={teamName}
@@ -165,7 +165,7 @@ const Signup = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Password"
+              label="密码"
               type="password"
               fullWidth
               margin="normal"
@@ -175,7 +175,7 @@ const Signup = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Confirm Password"
+              label="确认密码"
               type="password"
               fullWidth
               margin="normal"
@@ -194,7 +194,7 @@ const Signup = () => {
               size="large"
               sx={{ mt: 2, mb: 2, py: 1.5 }}
             >
-              Create Account
+              创建账户
             </Button>
           </Box>
         </Paper>

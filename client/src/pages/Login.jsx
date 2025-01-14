@@ -25,7 +25,6 @@ const Login = () => {
   useEffect(() => {
     if (location.state?.message) {
       setSessionMessage(location.state.message);
-      // Clean up the message from location state
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
@@ -37,7 +36,7 @@ const Login = () => {
       login(data.token, data.user);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to log in');
+      setError(err.response?.data?.error || '登录失败');
     }
   };
 
@@ -62,7 +61,7 @@ const Login = () => {
             gutterBottom
             sx={{ textAlign: 'center', mb: 3 }}
           >
-            Login
+            登录
           </Typography>
           {sessionMessage && (
             <Alert severity="info" sx={{ mb: 2 }}>
@@ -76,7 +75,7 @@ const Login = () => {
           )}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
-              label="Username"
+              label="用户名"
               fullWidth
               margin="normal"
               value={username}
@@ -85,7 +84,7 @@ const Login = () => {
               sx={{ mb: 2 }}
             />
             <TextField
-              label="Password"
+              label="密码"
               type="password"
               fullWidth
               margin="normal"
@@ -102,7 +101,7 @@ const Login = () => {
               size="large"
               sx={{ mt: 2, mb: 2, py: 1.5 }}
             >
-              Login
+              登录
             </Button>
           </Box>
         </Paper>

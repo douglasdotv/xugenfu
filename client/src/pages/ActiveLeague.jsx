@@ -15,10 +15,10 @@ const ActiveLeague = () => {
         if (data?.fsid) {
           navigate(`/leagues/${data.fsid}`);
         } else {
-          setError('No league found');
+          setError('未找到联赛');
         }
       } catch (err) {
-        setError(err.response?.data?.error ?? 'Failed to fetch latest league');
+        setError(err.response?.data?.error ?? '获取最新联赛失败');
       } finally {
         setLoading(false);
       }

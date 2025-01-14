@@ -30,7 +30,7 @@ const DetailedLeaderboard = () => {
         const data = await scoringService.getLeaderboard(fsid);
         setLeaderboard(data);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch leaderboard');
+        setError(err.response?.data?.error || '排行榜数据获取失败');
       } finally {
         setLoading(false);
       }
@@ -64,10 +64,10 @@ const DetailedLeaderboard = () => {
           startIcon={<ArrowBack />}
           sx={{ mb: 2 }}
         >
-          Back to League
+          返回联赛
         </Button>
         <Typography variant="h4" gutterBottom>
-          Detailed Leaderboard
+          详细排行榜
         </Typography>
       </Box>
 
@@ -76,12 +76,12 @@ const DetailedLeaderboard = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Rank</TableCell>
-                <TableCell>MZ Username</TableCell>
-                <TableCell>Full Name</TableCell>
-                <TableCell>Team</TableCell>
-                <TableCell align="right">Total Points</TableCell>
-                <TableCell>Round Scores</TableCell>
+                <TableCell>排名</TableCell>
+                <TableCell>MZ 用户名</TableCell>
+                <TableCell>全名</TableCell>
+                <TableCell>球队</TableCell>
+                <TableCell align="right">总积分</TableCell>
+                <TableCell>每轮得分</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -129,7 +129,7 @@ const DetailedLeaderboard = () => {
                           color="text.secondary"
                           sx={{ mb: 0.5 }}
                         >
-                          Round {round}: {score} pts
+                          第 {round} 轮: {score} 分
                         </Typography>
                       ))}
                   </TableCell>

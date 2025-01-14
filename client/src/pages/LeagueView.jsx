@@ -44,12 +44,12 @@ const StatusCell = ({ match, isAdmin, onEditClick }) => {
     <Tooltip
       title={(() => {
         if (match.isVoided) {
-          return `Voided - ${match.voidReason}`;
+          return `比赛作废 - ${match.voidReason}`;
         }
         if (isAdmin) {
-          return 'Match is not voided (click to edit)';
+          return '比赛正常（点击编辑）';
         }
-        return 'Match Status';
+        return '比赛状态';
       })()}
     >
       <Box onClick={handleClick} sx={{ display: 'inline-flex' }}>
@@ -75,7 +75,7 @@ const LeagueView = () => {
         const data = await leagueService.getLeague(fsid);
         setLeague(data);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch league data');
+        setError(err.response?.data?.error || '获取联赛数据失败');
       } finally {
         setLoading(false);
       }
@@ -84,7 +84,7 @@ const LeagueView = () => {
         const activeLeague = await leagueService.getActiveLeague();
         setLatestFsid(activeLeague.fsid);
       } catch {
-        setError('Failed to fetch latest league');
+        setError('获取最新联赛失败');
       }
     };
 
@@ -112,7 +112,7 @@ const LeagueView = () => {
       };
       setLeague(updatedLeague);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to update match status');
+      setError(err.response?.data?.error || '更新比赛状态失败');
     }
   };
 
@@ -135,7 +135,7 @@ const LeagueView = () => {
   if (!league) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Alert severity="info">No league data found</Alert>
+        <Alert severity="info">未找到联赛数据</Alert>
       </Container>
     );
   }
@@ -170,8 +170,7 @@ const LeagueView = () => {
               letterSpacing: '2px',
             }}
           >
-            {' '}
-            League {fsid}
+            联赛 {fsid}
             {fsid !== latestFsid ? (
               <Box
                 component="span"
@@ -200,7 +199,7 @@ const LeagueView = () => {
                   alignItems: 'center',
                 }}
               >
-                ACTIVE
+                当前联赛
               </Box>
             )}
           </Typography>
@@ -219,13 +218,13 @@ const LeagueView = () => {
               variant="contained"
               color="secondary"
             >
-              History 【以前的轮次】
+              历史记录
             </Button>
           </Box>
         </Box>
       </Box>
       <Typography variant="subtitle1" gutterBottom>
-        Last Updated: {new Date(league.lastUpdated).toLocaleString()}
+        最后更新: {new Date(league.lastUpdated).toLocaleString()}
       </Typography>
       <Box
         sx={{
@@ -239,17 +238,17 @@ const LeagueView = () => {
           {league.rounds.map((round) => (
             <Paper key={round.roundNumber} sx={{ mt: 4, p: 2 }}>
               <Typography variant="h6" gutterBottom>
-                Round {round.roundNumber} -{' '}
+                第 {round.roundNumber} 轮 -{' '}
                 {new Date(round.date).toLocaleString()}
               </Typography>
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Home Team</TableCell>
-                      <TableCell align="center">Result</TableCell>
-                      <TableCell>Away Team</TableCell>
-                      <TableCell align="center">Status</TableCell>
+                      <TableCell>主队</TableCell>
+                      <TableCell align="center">比分</TableCell>
+                      <TableCell>客队</TableCell>
+                      <TableCell align="center">状态</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -276,7 +275,7 @@ const LeagueView = () => {
                             rel="noopener noreferrer"
                             style={{ textDecoration: 'none', color: 'inherit' }}
                           >
-                            {match.result || 'Not Played'}
+                            {match.result || '未开始'}
                           </a>
                         </TableCell>
                         <TableCell>

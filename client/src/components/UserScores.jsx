@@ -31,7 +31,7 @@ const UserScores = ({ fsid }) => {
         const data = await scoringService.getUserScores(fsid);
         setScores(data);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch scores');
+        setError(err.response?.data?.error || '分数获取失败');
       } finally {
         setLoading(false);
       }
@@ -62,7 +62,7 @@ const UserScores = ({ fsid }) => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">Your Scores</Typography>
+        <Typography variant="h5">你的分数</Typography>
         <Box>
           <IconButton onClick={() => setExpanded(!expanded)} size="small">
             {expanded ? <ExpandLess /> : <ExpandMore />}
@@ -71,7 +71,7 @@ const UserScores = ({ fsid }) => {
       </Box>
 
       <Typography variant="h6" color="primary" gutterBottom>
-        Total Points: {scores.totalScore}
+        总积分: {scores.totalScore}
       </Typography>
 
       <Collapse in={expanded}>
@@ -79,8 +79,8 @@ const UserScores = ({ fsid }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Round</TableCell>
-                <TableCell align="right">Points</TableCell>
+                <TableCell>轮次</TableCell>
+                <TableCell align="right">分数</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -89,7 +89,7 @@ const UserScores = ({ fsid }) => {
                 .slice(0, 5)
                 .map((round) => (
                   <TableRow key={round.roundNumber}>
-                    <TableCell>Round {round.roundNumber}</TableCell>
+                    <TableCell>第 {round.roundNumber} 轮</TableCell>
                     <TableCell align="right">{round.score}</TableCell>
                   </TableRow>
                 ))}
@@ -104,7 +104,7 @@ const UserScores = ({ fsid }) => {
             variant="outlined"
             size="small"
           >
-            View All Scores
+            查看全部分数
           </Button>
         </Box>
       </Collapse>

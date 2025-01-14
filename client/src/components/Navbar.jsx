@@ -25,43 +25,40 @@ const Navbar = () => {
         </Typography>
 
         <Button color="inherit" component={Link} to="/leagues/active">
-          Active League
+          当前联赛
         </Button>
 
-        {/* Admin-only buttons */}
         {auth?.user?.isAdmin && (
           <>
             <Button color="inherit" component={Link} to="/leagues/fetch">
-              Fetch League
+              获取联赛数据
             </Button>
             <Button color="inherit" component={Link} to="/users">
-              Manage Users
+              用户管理
             </Button>
           </>
         )}
 
-        {/* Auth-required buttons */}
         {auth && (
           <>
             <Box mx={2}>
               <Typography variant="body1">
-                Welcome, {auth.user.name || auth.user.username}!
+                欢迎, {auth.user.name || auth.user.username}！
               </Typography>
             </Box>
             <Button color="inherit" onClick={handleLogout}>
-              Log out
+              退出登录
             </Button>
           </>
         )}
 
-        {/* Public buttons */}
         {!auth && (
           <>
             <Button color="inherit" component={Link} to="/login">
-              Log in
+              登录
             </Button>
             <Button color="inherit" component={Link} to="/signup">
-              Sign up
+              注册
             </Button>
           </>
         )}

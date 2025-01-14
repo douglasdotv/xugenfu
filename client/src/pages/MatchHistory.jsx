@@ -51,7 +51,7 @@ const MatchHistory = () => {
         setLeague(leagueData);
         setUserPredictions(predictionsMap);
       } catch (err) {
-        setError(err.response?.data?.error || 'Failed to fetch data');
+        setError(err.response?.data?.error || '数据获取失败');
       } finally {
         setLoading(false);
       }
@@ -79,7 +79,7 @@ const MatchHistory = () => {
   if (!league) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="info">No league data found</Alert>
+        <Alert severity="info">未找到联赛数据</Alert>
       </Container>
     );
   }
@@ -97,10 +97,10 @@ const MatchHistory = () => {
           startIcon={<ArrowBack />}
           sx={{ mb: 2 }}
         >
-          Back to League
+          返回联赛
         </Button>
         <Typography variant="h4" gutterBottom>
-          Match History
+          比赛历史记录
         </Typography>
       </Box>
 
@@ -114,7 +114,7 @@ const MatchHistory = () => {
           {pastRounds.map((round, index) => (
             <Tab
               key={round.roundNumber}
-              label={`Round ${round.roundNumber}`}
+              label={`第 ${round.roundNumber} 轮`}
               id={`round-tab-${index}`}
             />
           ))}
@@ -131,19 +131,19 @@ const MatchHistory = () => {
           {activeTab === index && (
             <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
               <Typography variant="h6" gutterBottom>
-                Round {round.roundNumber} -{' '}
-                {dayjs(round.date).format('MMM D, YYYY h:mm A')}
+                第 {round.roundNumber} 轮 -{' '}
+                {dayjs(round.date).format('YYYY年MM月DD日 HH:mm')}
               </Typography>
 
               <TableContainer>
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Home Team</TableCell>
-                      <TableCell align="center">Result</TableCell>
-                      <TableCell>Away Team</TableCell>
-                      <TableCell align="center">Your Prediction</TableCell>
-                      <TableCell align="center">Status</TableCell>
+                      <TableCell>主队</TableCell>
+                      <TableCell align="center">比赛结果</TableCell>
+                      <TableCell>客队</TableCell>
+                      <TableCell align="center">你的预测</TableCell>
+                      <TableCell align="center">状态</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -167,13 +167,13 @@ const MatchHistory = () => {
                           <TableCell align="center">
                             {match.isVoided ? (
                               <Chip
-                                label="VOID"
+                                label="无效比赛"
                                 size="small"
                                 color="error"
                                 title={match.voidReason}
                               />
                             ) : (
-                              match.result || 'Not Played'
+                              match.result || '未进行'
                             )}
                           </TableCell>
                           <TableCell>{match.awayTeam}</TableCell>
@@ -185,7 +185,7 @@ const MatchHistory = () => {
                               if (match.isVoided) {
                                 return (
                                   <Chip
-                                    label="Voided"
+                                    label="无效"
                                     size="small"
                                     color="error"
                                   />
