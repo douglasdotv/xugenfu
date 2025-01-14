@@ -192,7 +192,14 @@ const MatchHistory = () => {
                                 );
                               }
                               if (!prediction) {
-                                return '-';
+                                return (
+                                  <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                  >
+                                    -
+                                  </Typography>
+                                );
                               }
                               return isCorrect ? (
                                 <Check color="success" />
