@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import {
   Box,
-  TextField,
+  FormControl,
+  Select,
+  MenuItem,
   Button,
   Typography,
   Card,
@@ -16,40 +18,33 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
 const CHINA_TIMEZONE = 'Asia/Shanghai';
+const MATCH_OUTCOMES = {
+  HOME_WIN: 'HOME_WIN',
+  DRAW: 'DRAW',
+  AWAY_WIN: 'AWAY_WIN',
+};
+
+const OUTCOME_LABELS = {
+  [MATCH_OUTCOMES.HOME_WIN]: '主赢',
+  [MATCH_OUTCOMES.DRAW]: '平局',
+  [MATCH_OUTCOMES.AWAY_WIN]: '客赢',
+};
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
-  const [homeScore, setHomeScore] = useState(
-    existingPrediction ? existingPrediction.split('-')[0] : ''
-  );
-  const [awayScore, setAwayScore] = useState(
-    existingPrediction ? existingPrediction.split('-')[1] : ''
-  );
+  const [prediction, setPrediction] = useState(existingPrediction || '');
   const [error, setError] = useState('');
-
-  const handleScoreChange = (setValue) => (e) => {
-    const value = e.target.value;
-    if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 99)) {
-      setValue(value);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!homeScore || !awayScore) {
-      setError('请输入两队比分');
+    if (!prediction) {
+      setError('请选择比赛结果');
       return;
     }
 
-    if (isNaN(homeScore) || isNaN(awayScore)) {
-      setError('比分必须是数字');
-      return;
-    }
-
-    const prediction = `${homeScore}-${awayScore}`;
     onSubmit(prediction);
   };
 
@@ -109,7 +104,7 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
               <Fade in>
                 <Chip
                   icon={<Check />}
-                  label={`已预测: ${existingPrediction}`}
+                  label={`已预测: ${OUTCOME_LABELS[existingPrediction]}`}
                   color="success"
                   variant="outlined"
                   size="small"
@@ -160,35 +155,30 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
                 borderRadius: 1,
               }}
             >
-              <TextField
-                label={match.homeTeam}
-                value={homeScore}
-                onChange={handleScoreChange(setHomeScore)}
-                type="number"
-                size="small"
-                sx={{
-                  width: 100,
-                  '& .MuiOutlinedInput-root': {
+              <FormControl sx={{ minWidth: 200 }}>
+                <Select
+                  value={prediction}
+                  onChange={(e) => setPrediction(e.target.value)}
+                  displayEmpty
+                  size="small"
+                  sx={{
                     backgroundColor: 'background.paper',
-                  },
-                }}
-              />
-
-              <Typography variant="h6">-</Typography>
-
-              <TextField
-                label={match.awayTeam}
-                value={awayScore}
-                onChange={handleScoreChange(setAwayScore)}
-                type="number"
-                size="small"
-                sx={{
-                  width: 100,
-                  '& .MuiOutlinedInput-root': {
-                    backgroundColor: 'background.paper',
-                  },
-                }}
-              />
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    选择比赛结果
+                  </MenuItem>
+                  <MenuItem value={MATCH_OUTCOMES.HOME_WIN}>
+                    {OUTCOME_LABELS[MATCH_OUTCOMES.HOME_WIN]}
+                  </MenuItem>
+                  <MenuItem value={MATCH_OUTCOMES.DRAW}>
+                    {OUTCOME_LABELS[MATCH_OUTCOMES.DRAW]}
+                  </MenuItem>
+                  <MenuItem value={MATCH_OUTCOMES.AWAY_WIN}>
+                    {OUTCOME_LABELS[MATCH_OUTCOMES.AWAY_WIN]}
+                  </MenuItem>
+                </Select>
+              </FormControl>
 
               <Button
                 type="submit"
