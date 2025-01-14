@@ -12,6 +12,13 @@ import {
 } from '@mui/material';
 import { Check, Timer, Edit } from '@mui/icons-material';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+const CHINA_TIMEZONE = 'Asia/Shanghai';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
   const [homeScore, setHomeScore] = useState(
@@ -56,9 +63,17 @@ const PredictionForm = ({ match, onSubmit, existingPrediction }) => {
     return theme.palette.warning.main;
   };
 
-  const deadlineTime = dayjs(match.deadline).format('MMM D, YYYY h:mm A');
-  const isDeadlinePassed = dayjs().isAfter(dayjs(match.deadline));
-  const timeToDeadline = dayjs(match.deadline).diff(dayjs(), 'hour');
+  const deadlineTime = dayjs(match.deadline)
+    .tz(CHINA_TIMEZONE)
+    .format('MMM D, YYYY h:mm A');
+
+  const isDeadlinePassed = dayjs()
+    .tz(CHINA_TIMEZONE)
+    .isAfter(dayjs(match.deadline).tz(CHINA_TIMEZONE));
+
+  const timeToDeadline = dayjs(match.deadline)
+    .tz(CHINA_TIMEZONE)
+    .diff(dayjs().tz(CHINA_TIMEZONE), 'hour');
 
   return (
     <Card
